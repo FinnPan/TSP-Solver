@@ -1,0 +1,522 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\BIT.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CLARIST.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Delaunay.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GainType.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Genetic.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeoConversion.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gpx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Hashing.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Heap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LKH.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Segment.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Sequence.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Activate.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AddCandidate.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AddExtraCandidates.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AddTourCandidates.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AdjustCandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AdjustClusters.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AllocateStructures.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ascent.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Best2OptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Best3OptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Best4OptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Best5OptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BestKOptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BestSpecialOptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Between.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Between_SL.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Between_SSL.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BIT.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BridgeGain.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BuildKDTree.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\C.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CandidateReport.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ChooseInitialTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Connect.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Create_POPMUSIC_CandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CreateCandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CreateDelaunayCandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CreateNNCandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CreateQuadrantCandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CTSP_InitialTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CVRP_InitialTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Delaunay.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Distance.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Distance_MTSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Distance_SOP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Distance_SPECIAL.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\eprintf.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ERXT.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Excludable.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Exclude.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FindTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FixedOrCommonCandidates.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Flip.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Flip_SL.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Flip_SSL.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Forbidden.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FreeStructures.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fscanint.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Gain23.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GenerateCandidates.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Genetic.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GeoConversion.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GetTime.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpx.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GreedyTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hashing.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Heap.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Improvement.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IsBackboneCandidate.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IsCandidate.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IsCommonEdge.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IsPossibleCandidate.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KSwapKick.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LinKernighan.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LKH.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LKHmain.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Make2OptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Make3OptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Make4OptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Make5OptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MakeKOptMove.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MergeTourWithBestTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MergeWithTourCLARIST.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MergeWithTourGPX2.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MergeWithTourIPT.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Minimum1TreeCost.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MinimumSpanningTree.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MTSP_InitialTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MTSP_Report.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MTSP_WriteSolution.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MTSP2TSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NormalizeNodeList.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NormalizeSegmentList.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OrderCandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PatchCycles.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PDPTW_Reduce.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_1_PDTSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_ACVRP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_BWTSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_CCVRP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_CTSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_CVRP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_CVRPTW.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_M_PDTSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_M1_PDTSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_MLP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_MTSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_OVRP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_PDPTW.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_PDTSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_PDTSPF.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_PDTSPL.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_RCTVRP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_SOP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_TRP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_TSPDL.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_TSPPD.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_TSPTW.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_VRPB.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_VRPBTW.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Penalty_VRPPD.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\printff.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PrintParameters.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Random.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReadCandidates.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReadEdges.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReadLine.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReadParameters.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReadPenalties.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReadProblem.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RecordBestTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RecordBetterTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RemoveFirstActive.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResetCandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RestoreTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SegmentSize.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sequence.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SFCTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SINTEF_WriteSolution.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveCompressedSubproblem.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveDelaunaySubproblems.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveKarpSubproblems.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveKCenterSubproblems.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveKMeansSubproblems.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveRoheSubproblems.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveSFCSubproblems.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveSubproblem.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveSubproblemBorderProblems.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolveTourSegmentSubproblems.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SOP_InitialTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SOP_RepairTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SOP_Report.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Statistics.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StatusReport.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StoreTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STTSP2TSP.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SymmetrizeCandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TrimCandidateSet.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TSPDL_InitialTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TSPTW_MakespanCost.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TSPTW_Reduce.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VRPB_Reduce.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WriteCandidates.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WritePenalties.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WriteTour.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
