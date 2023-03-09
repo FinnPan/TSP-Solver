@@ -20,15 +20,8 @@ public:
   void SetAverageBest();                 /* Compute average and best tour lengths of the population */
   void InitPop();                        /* Create an initial population */
   void SelectForMating();                /* Determine a set of pairs of parents at each generation */
-  void SelectForSurvival( int s );       /* Not do anything */
   void GenerateKids( int s );            /* Generate offspring solutions from a selected pair of  
                                             parents. Selection for survival is also performed here. */
-  void GetEdgeFreq();                    /* Compute the frequency of the edges of the population */
-
-  void PrintOn( int n, char* dstFile );  /* Display and write summary of results */
-  void WriteBest( char* dstFile );       /* Write the best tour */
-  void WritePop( int n, char* dstFile ); /* Write the population */
-
 
   Evaluator* fEvaluator;                /* Distance of the edges */
   Cross* fCross;                        /* Eede assembly crossover */
@@ -41,22 +34,12 @@ public:
   Indi tBest;                           /* Best solution in the current population */
   int fCurNumOfGen;                      /* The current number of generations */
   long int fAccumurateNumCh;             /* The accumulated number of offspring solutions */
-  int fBestNumOfGen;                     /* The number of generations at which the current best 
-                                            solution was found */ 
-  long int fBestAccumeratedNumCh;        /* The accumulated number of offspring solutions at which 
-                                            the current best solution was found */
-  int **fEdgeFreq;                       /* The frequency of the edges of the population */
+
+  int fStagBest;
   double fAverageValue;                  /* The average tour lengths of the population */
   int fBestValue;                        /* The tour lenght of the best tour in the population */
   int fBestIndex;                        /* Index of the best population member */
   int* fIndexForMating;                  /* Mating list (r[] in the paper) */
-
-  int fStagBest;                         /* The number of generations during which no improvement  
-                                            is found in the best tour */
-  int fFlagC[ 10 ];                      /* Specify configurations of EAX and selection strategy */
-  int fStage;                            /* Current stage */
-  int fMaxStagBest;                      /* If fStagBest = fMaxStagBest, proceed to the next stage */
-  int fCurNumOfGen1;                     /* Number of generations at which Stage I is terminated */
 
   clock_t fTimeStart, fTimeInit, fTimeEnd;  /* Use them to measure the execution time */
 };

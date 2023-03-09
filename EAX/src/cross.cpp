@@ -62,18 +62,6 @@ Cross::Cross( int N )
   fBestAppliedCylce = new int [ fN ];
   // Speed Up End
 
-  // Block2
-  fNumOfElementINAB = new int [ fMaxNumOfABcycle ];
-  fInEffectNode = new int* [ fN ];
-  for( int i = 0; i < fN; ++i )
-    fInEffectNode[ i ] = new int [ 2 ];
-  fWeight_RR = new int* [ fMaxNumOfABcycle ];
-  for( int i = 0; i < fMaxNumOfABcycle; ++i )
-    fWeight_RR[ i ] = new int [ fMaxNumOfABcycle ];
-  fWeight_SR = new int [ fMaxNumOfABcycle ];
-  fWeight_C = new int [ fMaxNumOfABcycle ];
-  fUsedAB = new int [ fN ];
-  fMoved_AB = new int [ fN ];
   fABcycleInEset = new int [ fMaxNumOfABcycle ];
 }
 
@@ -131,24 +119,12 @@ Cross::~Cross()
   delete [] fBestAppliedCylce;
   // Speed Up End
   
-
-  // Block2
-  delete [] fNumOfElementINAB;
-  for ( int j = 0; j < fN; ++j ) 
-    delete [] fInEffectNode[ j ];
-  delete [] fInEffectNode;
-  for( int i = 0; i < fMaxNumOfABcycle; ++i )
-    delete [] fWeight_RR[ i ];
-  delete [] fWeight_SR;
-  delete [] fWeight_C;
-  delete [] fUsedAB;
-  delete [] fMoved_AB;
   delete [] fABcycleInEset;
 }
 
-void Cross::SetParents( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int numOfKids )
+void Cross::SetParents( const Indi& tPa1, const Indi& tPa2, int numOfKids )
 {
-  this->SetABcycle( tPa1, tPa2, flagC, numOfKids ); 
+  this->SetABcycle( tPa1, tPa2, numOfKids ); 
 
   fDis_AB = 0;   
 
@@ -173,43 +149,23 @@ void Cross::SetParents( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int
   }
 
   assert( next == st );
-
-  if( flagC[ 1 ] == 2 ){           /* Block2 */
-    fTmax = 10;                    /* Block2 */
-    fMaxStag = 20;                 /* Block2 (1:Greedy LS, 20:Tabu Search) */
-    this->SetWeight( tPa1, tPa2 ); /* Block2 */
-  }
 }
 
 
-void Cross::DoIt( Indi& tKid, Indi& tPa2, int numOfKids, int flagP, int flagC[ 10 ], int **fEdgeFreq )
+void Cross::DoIt( Indi& tKid, Indi& tPa2, int numOfKids, int flagP)
 {
   int Num;     
-  int jnum, centerAB; 
+  int jnum; 
   int gain;
   int BestGain;  
   double pointMax, point;
-  double DLoss;
-
-  fEvalType = flagC[ 0 ];              /* 1:Greedy, 2:---, 3:Distance, 4:Entropy */
-  fEsetType = flagC[ 1 ];              /* 1:Single-AB, 2:Block2 */
-
-  assert( fEvalType == 1 || fEvalType == 3 || fEvalType == 4 );
-  assert( fEsetType == 1 || fEsetType == 2 );
 
   if ( numOfKids <= fNumOfABcycle ) 
     Num = numOfKids;
   else 
     Num = fNumOfABcycle;
 
-  if( fEsetType == 1 ){         /* Single-AB */
-    Utils::Permutation( fPermu, fNumOfABcycle, fNumOfABcycle ); 
-  }
-  else if( fEsetType == 2 ){    /* Block2 */
-    for( int k =0; k< fNumOfABcycle; ++k )
-      fNumOfElementINAB[ k ] = fABcycle[ k ][ 0 ];
-    Utils::Index_B( fNumOfElementINAB, fNumOfABcycle, fPermu, fNumOfABcycle );
-  }
+  Utils::Permutation( fPermu, fNumOfABcycle, fNumOfABcycle ); 
 
 
   fNumOfGeneratedCh = 0;
@@ -220,26 +176,8 @@ void Cross::DoIt( Indi& tKid, Indi& tPa2, int numOfKids, int flagP, int flagC[ 1
   for( int j =0; j < Num; ++j )
   { 
     fNumOfABcycleInEset = 0;
-    if( fEsetType == 1 ){         /* Single-AB */
-      jnum = fPermu[ j ];
-      fABcycleInEset[ fNumOfABcycleInEset++ ] = jnum; 
-    }
-    else if( fEsetType == 2 ){    /* Block2 */
-      jnum = fPermu[ j ];
-      centerAB = jnum;
-      for( int s = 0; s < fNumOfABcycle; ++s ){ 
-	if( s == centerAB )
-	  fABcycleInEset[ fNumOfABcycleInEset++ ] = s; 
-	else{
-	  if( fWeight_RR[ centerAB ][ s ] > 0 && fABcycle[ s ][ 0 ] < fABcycle[ centerAB ][ 0 ] ){
-	    if( rand() %2 == 0 )
-	      fABcycleInEset[ fNumOfABcycleInEset++ ] = s; 
-	  }
-	}
-      }
-      this->Search_Eset( centerAB );    
-    }
-
+    jnum = fPermu[ j ];
+    fABcycleInEset[ fNumOfABcycleInEset++ ] = jnum; 
 
     fNumOfSPL = 0;          
     gain = 0;               
@@ -260,19 +198,7 @@ void Cross::DoIt( Indi& tKid, Indi& tPa2, int numOfKids, int flagP, int flagC[ 1
     
     ++fNumOfGeneratedCh;
 
-    if( fEvalType == 1 )       /* Greedy */
-      DLoss = 1.0;
-    else if( fEvalType == 2 ){  
-      assert( 1 == 2 );
-    }
-    else if( fEvalType == 3 )  /* Distance preservation */
-      DLoss = this->Cal_ADP_Loss( fEdgeFreq );     
-    else if( fEvalType == 4 )  /* Entropy preservation */
-      DLoss = this->Cal_ENT_Loss( fEdgeFreq );             
-
-    if( DLoss <= 0.0 ) DLoss = 0.00000001; 
-
-    point = (double)gain / DLoss;                         
+    point = (double)gain;                         
     tKid.fEvaluationValue = tKid.fEvaluationValue - gain; 
     
     // if( pointMax < point ){
@@ -303,12 +229,11 @@ void Cross::DoIt( Indi& tKid, Indi& tPa2, int numOfKids, int flagP, int flagC[ 1
   if( fFlagImp == 1 ){           
     this->GoToBest( tKid ); 
     tKid.fEvaluationValue = tKid.fEvaluationValue - BestGain;
-    this->IncrementEdgeFreq( fEdgeFreq );
   }
 }
 
 
-void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int numOfKids )
+void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int numOfKids )
 {
   bunki_many=0; koritsu_many=0;
   for( int j = 0; j < fN ; ++j )
@@ -365,7 +290,7 @@ void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int
       case 2:   
 	r=rand()%2;
 	ci=near_data[pr][fPosiCurr%2+1+2*r];
-	if(r==0) this->Swap(near_data[pr][fPosiCurr%2+1],near_data[pr][fPosiCurr%2+3]);
+	if(r==0) std::swap(near_data[pr][fPosiCurr%2+1],near_data[pr][fPosiCurr%2+3]);
 	break;
       case 3:   
 	ci=near_data[pr][fPosiCurr%2+3];
@@ -383,11 +308,11 @@ void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int
 	    {                  
 	      if(near_data[st][fPosiCurr%2+1]==pr)
 	      {
-		this->Swap(near_data[ci][fPosiCurr%2+1],near_data[ci][fPosiCurr%2+3]); 
+		std::swap(near_data[ci][fPosiCurr%2+1],near_data[ci][fPosiCurr%2+3]); 
 	      }
 	      st_appear = 1;
 	      this->FormABcycle();
-	      if( flagC[ 1 ] == 1 && fNumOfABcycle == numOfKids ) goto LLL;
+	      if( fNumOfABcycle == numOfKids ) goto LLL;
 	      if( fNumOfABcycle == fMaxNumOfABcycle ) goto LLL;
 
 	      flag_st=0;
@@ -396,7 +321,7 @@ void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int
 	    }
 	    else
 	    {
-	      this->Swap(near_data[ci][fPosiCurr%2+1],near_data[ci][fPosiCurr%2+3]); 
+            std::swap(near_data[ci][fPosiCurr%2+1],near_data[ci][fPosiCurr%2+3]);
 	      pr_type=2;
 	    }
 	    check_koritsu[st]=fPosiCurr;
@@ -405,7 +330,7 @@ void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int
 	  {         
 	    st_appear = 2;
 	    this->FormABcycle();
-	    if( flagC[ 1 ] == 1 && fNumOfABcycle == numOfKids ) goto LLL;
+	    if( fNumOfABcycle == numOfKids ) goto LLL;
 	    if( fNumOfABcycle == fMaxNumOfABcycle ) goto LLL;
 
 	    flag_st=1;
@@ -417,18 +342,18 @@ void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int
 	  check_koritsu[ci]=fPosiCurr;
 	  if(near_data[ci][fPosiCurr%2+1]==pr)
 	  {
-	    this->Swap(near_data[ci][fPosiCurr%2+1],near_data[ci][fPosiCurr%2+3]); 
+          std::swap(near_data[ci][fPosiCurr%2+1],near_data[ci][fPosiCurr%2+3]);
 	  }
 	  pr_type=2;
 	}
 	else if(check_koritsu[ci]>0)   
 	{
-	  this->Swap(near_data[ci][fPosiCurr%2+1],near_data[ci][fPosiCurr%2+3]); 
+        std::swap(near_data[ci][fPosiCurr%2+1],near_data[ci][fPosiCurr%2+3]);
 	  if((fPosiCurr-check_koritsu[ci])%2==0)  
 	  {
 	    st_appear = 1;
 	    this->FormABcycle();
-	    if( flagC[ 1 ] == 1 && fNumOfABcycle == numOfKids ) goto LLL;
+	    if( fNumOfABcycle == numOfKids ) goto LLL;
 	      if( fNumOfABcycle == fMaxNumOfABcycle ) goto LLL;
 	      
 	    flag_st=0;
@@ -437,7 +362,7 @@ void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int
 	  }
 	  else
 	  {
-	    this->Swap(near_data[ci][(fPosiCurr+1)%2+1],near_data[ci][(fPosiCurr+1)%2+3]); 
+          std::swap(near_data[ci][(fPosiCurr+1)%2+1],near_data[ci][(fPosiCurr+1)%2+3]);
 	    pr_type=3;
 	  }  
 	}
@@ -448,7 +373,7 @@ void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int
         {
 	  st_appear = 1;
 	  this->FormABcycle();
-	  if( flagC[ 1 ] == 1 && fNumOfABcycle == numOfKids ) goto LLL;
+	  if( fNumOfABcycle == numOfKids ) goto LLL;
 	  if( fNumOfABcycle == fMaxNumOfABcycle ) goto LLL;
 
 	  flag_st=1;
@@ -478,7 +403,7 @@ void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int
       {
 	st_appear = 1;
 	this->FormABcycle();
-	if( flagC[ 1 ] == 1 && fNumOfABcycle == numOfKids ) goto LLL;
+	if( fNumOfABcycle == numOfKids ) goto LLL;
 	if( fNumOfABcycle == fMaxNumOfABcycle ) goto LLL;
 	
 	flag_circle=1;
@@ -567,16 +492,6 @@ void Cross::FormABcycle()
   fGainAB[fNumOfABcycle] = diff;
   ++fNumOfABcycle;
 }
-
-
-void Cross::Swap(int &a,int &b)
-{
-  int s;
-  s=a;
-  a=b;
-  b=s;
-}
-
 
 void Cross::ChangeSol( Indi& tKid, int ABnum, int type )
 {
@@ -969,582 +884,6 @@ void Cross::GoToBest( Indi& tKid )
     else tKid.fLink[b1][1] = bb; 
   }
 }
-
-
-void Cross::IncrementEdgeFreq( int **fEdgeFreq )
-{
-  int j, jnum, cem;
-  int r1, r2, b1, b2;
-  int aa, bb, a1;
-  
-  for( int s = 0; s < fNumOfBestAppliedCycle; ++s ){
-    jnum = fBestAppliedCylce[ s ];
-    
-    cem = fABcycle[ jnum ][ 0 ];  
-    fC[ 0 ] = fABcycle[ jnum ][ 0 ];
-
-    for( j = 1; j <= cem+3; ++j ) 
-      fC[ j ] = fABcycle[ jnum ][ j ];
-
-    for( j = 0; j <cem/2; ++j )
-    {                           
-      r1 = fC[2+2*j]; r2 = fC[3+2*j]; 
-      b1 = fC[1+2*j]; b2 = fC[4+2*j]; 
-
-      // r1 - b1 add    
-      // r1 - r2 remove
-      // r2 - r1 remove
-      // r2 - b2 add
-
-      ++fEdgeFreq[ r1 ][ b1 ];
-      --fEdgeFreq[ r1 ][ r2 ];
-      --fEdgeFreq[ r2 ][ r1 ];
-      ++fEdgeFreq[ r2 ][ b2 ];
-
-    }
-  }
-
-  for( int s = 0; s < fNumOfBestModiEdge; ++s )
-  { 
-    aa = fBestModiEdge[ s ][ 0 ];
-    bb = fBestModiEdge[ s ][ 1 ];   
-    a1 = fBestModiEdge[ s ][ 2 ];   
-    b1 = fBestModiEdge[ s ][ 3 ];
-
-    --fEdgeFreq[ aa ][ bb ];
-    --fEdgeFreq[ a1 ][ b1 ];
-    ++fEdgeFreq[ aa ][ a1 ];
-    ++fEdgeFreq[ bb ][ b1 ];
-    --fEdgeFreq[ bb ][ aa ];
-    --fEdgeFreq[ b1 ][ a1 ];
-    ++fEdgeFreq[ a1 ][ aa ];
-    ++fEdgeFreq[ b1 ][ bb ];
-  }
-}
-
-
-int Cross::Cal_ADP_Loss( int **fEdgeFreq )
-{
-  int j, jnum, cem;
-  int r1, r2, b1, b2;
-  int aa, bb, a1;
-  double DLoss; 
-
-  
-  DLoss = 0;
-  for( int s = 0; s < fNumOfAppliedCycle; ++s ){
-    jnum = fAppliedCylce[ s ];
-    
-    cem = fABcycle[ jnum ][ 0 ];  
-    fC[ 0 ] = fABcycle[ jnum ][ 0 ];
-
-    for( j = 1; j <= cem+3; ++j ) 
-      fC[ j ] = fABcycle[ jnum ][ j ];
-
-    for( j = 0; j <cem/2; ++j )
-    {                           
-      r1 = fC[2+2*j]; r2 = fC[3+2*j]; 
-      b1 = fC[1+2*j]; b2 = fC[4+2*j]; 
-
-      // r1 - b1 add 
-      // r1 - r2 remove
-      // r2 - r1 remove
-      // r2 - b2 add
-
-      DLoss -= (fEdgeFreq[ r1 ][ r2 ]-1);
-      DLoss -= (fEdgeFreq[ r2 ][ r1 ]-1);
-      DLoss += fEdgeFreq[ r2 ][ b2 ];
-      DLoss += fEdgeFreq[ b2 ][ r2 ];
-
-      // Remove
-      --fEdgeFreq[ r1 ][ r2 ]; 
-      --fEdgeFreq[ r2 ][ r1 ]; 
-
-      // Add
-      ++fEdgeFreq[ r2 ][ b2 ]; 
-      ++fEdgeFreq[ b2 ][ r2 ]; 
-    }
-  }
-
-
-  for( int s = 0; s < fNumOfModiEdge; ++s )
-  { 
-    aa = fModiEdge[ s ][ 0 ];
-    bb = fModiEdge[ s ][ 1 ];   
-    a1 = fModiEdge[ s ][ 2 ];   
-    b1 = fModiEdge[ s ][ 3 ];
-
-    DLoss -= (fEdgeFreq[ aa ][ bb ]-1);
-    DLoss -= (fEdgeFreq[ bb ][ aa ]-1);
-    DLoss -= (fEdgeFreq[ a1 ][ b1 ]-1);
-    DLoss -= (fEdgeFreq[ b1 ][ a1 ]-1);
-
-    DLoss += fEdgeFreq[ aa ][ a1 ];
-    DLoss += fEdgeFreq[ a1 ][ aa ];
-    DLoss += fEdgeFreq[ bb ][ b1 ];
-    DLoss += fEdgeFreq[ b1 ][ bb ];
-
-    // Remove
-    --fEdgeFreq[ aa ][ bb ];
-    --fEdgeFreq[ bb ][ aa ];
-    --fEdgeFreq[ a1 ][ b1 ];
-    --fEdgeFreq[ b1 ][ a1 ];
-
-    // Add
-    ++fEdgeFreq[ aa ][ a1 ];
-    ++fEdgeFreq[ a1 ][ aa ];
-    ++fEdgeFreq[ bb ][ b1 ];
-    ++fEdgeFreq[ b1 ][ bb ];
-  }
-
-  
-  for( int s = 0; s < fNumOfAppliedCycle; ++s ){
-    jnum = fAppliedCylce[ s ];
-    
-    cem = fABcycle[ jnum ][ 0 ];  
-    fC[ 0 ] = fABcycle[ jnum ][ 0 ];
-
-    for( j = 1; j <= cem+3; ++j ) 
-      fC[ j ] = fABcycle[ jnum ][ j ];
-
-    for( j = 0; j <cem/2; ++j )
-    {                           
-      r1 = fC[2+2*j]; r2 = fC[3+2*j]; 
-      b1 = fC[1+2*j]; b2 = fC[4+2*j]; 
-
-      ++fEdgeFreq[ r1 ][ r2 ]; 
-      ++fEdgeFreq[ r2 ][ r1 ]; 
-      --fEdgeFreq[ r2 ][ b2 ]; 
-      --fEdgeFreq[ b2 ][ r2 ]; 
-    }
-  }
-
-  // Modification
-  for( int s = 0; s < fNumOfModiEdge; ++s )
-  { 
-    aa = fModiEdge[ s ][ 0 ];
-    bb = fModiEdge[ s ][ 1 ];   
-    a1 = fModiEdge[ s ][ 2 ];   
-    b1 = fModiEdge[ s ][ 3 ];
-
-    // Remove
-    ++fEdgeFreq[ aa ][ bb ];
-    ++fEdgeFreq[ bb ][ aa ];
-
-    ++fEdgeFreq[ a1 ][ b1 ];
-    ++fEdgeFreq[ b1 ][ a1 ];
-
-    --fEdgeFreq[ aa ][ a1 ];
-    --fEdgeFreq[ a1 ][ aa ];
-
-    --fEdgeFreq[ bb ][ b1 ];
-    --fEdgeFreq[ b1 ][ bb ];
-
-  }
-
-  return int(DLoss / 2);
-}
-
-
-double Cross::Cal_ENT_Loss( int **fEdgeFreq )
-{
-  int j, jnum, cem;
-  int r1, r2, b1, b2;
-  int aa, bb, a1;
-  double DLoss; 
-  double h1, h2;
-
-  
-  DLoss = 0;
-// AB-cycle
-  for( int s = 0; s < fNumOfAppliedCycle; ++s ){
-    jnum = fAppliedCylce[ s ];
-    
-    cem = fABcycle[ jnum ][ 0 ];  
-    fC[ 0 ] = fABcycle[ jnum ][ 0 ];
-
-    for( j = 1; j <= cem+3; ++j ) 
-      fC[ j ] = fABcycle[ jnum ][ j ];
-
-    for( j = 0; j <cem/2; ++j )
-    {                           
-      r1 = fC[2+2*j]; r2 = fC[3+2*j]; 
-      b1 = fC[1+2*j]; b2 = fC[4+2*j]; 
-
-      // r1 - b1 add    
-      // r1 - r2 remove
-      // r2 - r1 remove
-      // r2 - b2 add
-
-      // Remove
-      h1 = (double)( fEdgeFreq[ r1 ][ r2 ] - 1 )/(double)fNumOfPop;
-      h2 = (double)( fEdgeFreq[ r1 ][ r2 ] )/(double)fNumOfPop;
-      if( fEdgeFreq[ r1 ][ r2 ] - 1 != 0 )
-	DLoss -= h1 * log( h1 );
-      DLoss += h2 * log( h2 );
-      --fEdgeFreq[ r1 ][ r2 ]; 
-      --fEdgeFreq[ r2 ][ r1 ]; 
-
-      // Add
-      h1 = (double)( fEdgeFreq[ r2 ][ b2 ] + 1 )/(double)fNumOfPop;
-      h2 = (double)( fEdgeFreq[ r2 ][ b2 ])/(double)fNumOfPop;
-      DLoss -= h1 * log( h1 );
-      if( fEdgeFreq[ r2 ][ b2 ] != 0 )
-	DLoss += h2 * log( h2 );
-      ++fEdgeFreq[ r2 ][ b2 ]; 
-      ++fEdgeFreq[ b2 ][ r2 ]; 
-    }
-  }
-
-  // Modification
-  for( int s = 0; s < fNumOfModiEdge; ++s )
-  { 
-    aa = fModiEdge[ s ][ 0 ];
-    bb = fModiEdge[ s ][ 1 ];   
-    a1 = fModiEdge[ s ][ 2 ];   
-    b1 = fModiEdge[ s ][ 3 ];
-
-    // Remove
-    h1 = (double)( fEdgeFreq[ aa ][ bb ] - 1 )/(double)fNumOfPop;
-    h2 = (double)( fEdgeFreq[ aa ][ bb ] )/(double)fNumOfPop;
-    if( fEdgeFreq[ aa ][ bb ] - 1 != 0 )
-      DLoss -= h1 * log( h1 );
-    DLoss += h2 * log( h2 );
-    --fEdgeFreq[ aa ][ bb ];
-    --fEdgeFreq[ bb ][ aa ];
-
-    h1 = (double)( fEdgeFreq[ a1 ][ b1 ] - 1 )/(double)fNumOfPop;
-    h2 = (double)( fEdgeFreq[ a1 ][ b1 ] )/(double)fNumOfPop;
-    if( fEdgeFreq[ a1 ][ b1 ] - 1 != 0 )
-      DLoss -= h1 * log( h1 );
-    DLoss += h2 * log( h2 );
-    --fEdgeFreq[ a1 ][ b1 ];
-    --fEdgeFreq[ b1 ][ a1 ];
-
-    // Add
-    h1 = (double)( fEdgeFreq[ aa ][ a1 ] + 1 )/(double)fNumOfPop;
-    h2 = (double)( fEdgeFreq[ aa ][ a1 ])/(double)fNumOfPop;
-    DLoss -= h1 * log( h1 );
-    if( fEdgeFreq[ aa ][ a1 ] != 0 )
-      DLoss += h2 * log( h2 );
-    ++fEdgeFreq[ aa ][ a1 ];
-    ++fEdgeFreq[ a1 ][ aa ];
-
-    h1 = (double)( fEdgeFreq[ bb ][ b1 ] + 1 )/(double)fNumOfPop;
-    h2 = (double)( fEdgeFreq[ bb ][ b1 ])/(double)fNumOfPop;
-    DLoss -= h1 * log( h1 );
-    if( fEdgeFreq[ bb ][ b1 ] != 0 )
-      DLoss += h2 * log( h2 );
-    ++fEdgeFreq[ bb ][ b1 ];
-    ++fEdgeFreq[ b1 ][ bb ];
-  }
-  DLoss = -DLoss;  
-
-  // restore EdgeFreq
-  for( int s = 0; s < fNumOfAppliedCycle; ++s ){
-    jnum = fAppliedCylce[ s ];
-    
-    cem = fABcycle[ jnum ][ 0 ];  
-    fC[ 0 ] = fABcycle[ jnum ][ 0 ];
-
-    for( j = 1; j <= cem+3; ++j ) 
-      fC[ j ] = fABcycle[ jnum ][ j ];
-
-    for( j = 0; j <cem/2; ++j )
-    {                           
-      r1 = fC[2+2*j]; r2 = fC[3+2*j]; 
-      b1 = fC[1+2*j]; b2 = fC[4+2*j]; 
-
-      ++fEdgeFreq[ r1 ][ r2 ]; 
-      ++fEdgeFreq[ r2 ][ r1 ]; 
-      --fEdgeFreq[ r2 ][ b2 ]; 
-      --fEdgeFreq[ b2 ][ r2 ]; 
-    }
-  }
-
-  for( int s = 0; s < fNumOfModiEdge; ++s )
-  { 
-    aa = fModiEdge[ s ][ 0 ];
-    bb = fModiEdge[ s ][ 1 ];   
-    a1 = fModiEdge[ s ][ 2 ];   
-    b1 = fModiEdge[ s ][ 3 ];
-
-    ++fEdgeFreq[ aa ][ bb ];
-    ++fEdgeFreq[ bb ][ aa ];
-
-    ++fEdgeFreq[ a1 ][ b1 ];
-    ++fEdgeFreq[ b1 ][ a1 ];
-
-    --fEdgeFreq[ aa ][ a1 ];
-    --fEdgeFreq[ a1 ][ aa ];
-
-    --fEdgeFreq[ bb ][ b1 ];
-    --fEdgeFreq[ b1 ][ bb ];
-
-  }
-
-  return DLoss;
-}
-
-
-void Cross::SetWeight( const Indi& tPa1, const Indi& tPa2 ) 
-{
-  int cem;
-  int r1, r2, v1, v2, v_p;
-  int AB_num;
-
-  for( int i = 0; i < fN; ++i ){
-    fInEffectNode[ i ][ 0 ] = -1;  
-    fInEffectNode[ i ][ 1 ] = -1;
-  }
-
-  // Step 1:
-  for( int s = 0; s < fNumOfABcycle; ++s ){
-    cem = fABcycle[ s ][ 0 ];  
-    for( int j = 0; j < cem/2; ++j ){
-      r1 = fABcycle[ s ][ 2*j+2 ];  // red edge
-      r2 = fABcycle[ s ][ 2*j+3 ]; 
-
-      if( fInEffectNode[ r1 ][ 0 ] == -1 ) fInEffectNode[ r1 ][ 0 ] = s;
-      else if ( fInEffectNode[ r1 ][ 1 ] == -1 ) fInEffectNode[ r1 ][ 1 ] = s;
-      else assert( 1 == 2 );
-
-      if( fInEffectNode[ r2 ][ 0 ] == -1 ) fInEffectNode[ r2 ][ 0 ] = s;
-      else if ( fInEffectNode[ r2 ][ 1 ] == -1 ) fInEffectNode[ r2 ][ 1 ] = s;
-      else assert( 1 == 2 );
-    }
-  }
-  
-  // Step 2:
-  for( int i = 0; i < fN; ++i ){
-    if( fInEffectNode[ i ][ 0 ] != -1 && fInEffectNode[ i ][ 1 ] == -1 ){ 
-      AB_num = fInEffectNode[ i ][ 0 ];
-      v1 = i;
-
-      if( tPa1.fLink[ v1 ][ 0 ] != tPa2.fLink[ v1 ][ 0 ] && tPa1.fLink[ v1 ][ 0 ] != tPa2.fLink[ v1 ][ 1 ] )
-	v_p = tPa1.fLink[ v1 ][ 0 ];
-      else if( tPa1.fLink[ v1 ][ 1 ] != tPa2.fLink[ v1 ][ 0 ] && tPa1.fLink[ v1 ][ 1 ] != tPa2.fLink[ v1 ][ 1 ] )
-	v_p = tPa1.fLink[ v1 ][ 1 ];
-      else
-	assert( 1 == 2 );
-
-      while( 1 ){
-	assert( fInEffectNode[ v1 ][ 0 ] != -1 );
-	assert( fInEffectNode[ v1 ][ 1 ] == -1 );
-	fInEffectNode[ v1 ][ 1 ] = AB_num;
-
-	if( tPa1.fLink[ v1 ][ 0 ] != v_p )
-	  v2 = tPa1.fLink[ v1 ][ 0 ];
-	else if( tPa1.fLink[ v1 ][ 1 ] != v_p )
-	  v2 = tPa1.fLink[ v1 ][ 1 ];
-	else 
-	  assert( 1 == 2 );
-
-	if( fInEffectNode[ v2 ][ 0 ] == -1 )
-	  fInEffectNode[ v2 ][ 0 ] = AB_num;
-	else if( fInEffectNode[ v2 ][ 1 ] == -1 )
-	  fInEffectNode[ v2 ][ 1 ] = AB_num;
-	else 
-	  assert( 1 == 2 );
-	
-	if( fInEffectNode[ v2 ][ 1 ] != -1 )
-	  break;
-
-	v_p = v1;
-	v1 = v2;
-      }
-    }
-  }
-
-  // Step 3:
-  assert( fNumOfABcycle < fMaxNumOfABcycle );
-  for( int s1 = 0; s1 < fNumOfABcycle; ++s1 ){
-    fWeight_C[ s1 ] = 0;
-    for( int s2 = 0; s2 < fNumOfABcycle; ++s2 ){
-      fWeight_RR[ s1 ][ s2 ] = 0;
-    }
-  }
-  
-  for( int i = 0; i < fN; ++i ){
-    assert( (fInEffectNode[ i ][ 0 ] == -1 && fInEffectNode[ i ][ 1 ] == -1) ||
-	    (fInEffectNode[ i ][ 0 ] != -1 && fInEffectNode[ i ][ 1 ] != -1) );
-
-    if( fInEffectNode[ i ][ 0 ] != -1 && fInEffectNode[ i ][ 1 ] != -1 ){
-      ++fWeight_RR[ fInEffectNode[ i ][ 0 ] ][ fInEffectNode[ i ][ 1 ] ];
-      ++fWeight_RR[ fInEffectNode[ i ][ 1 ] ][ fInEffectNode[ i ][ 0 ] ];
-    }
-    if( fInEffectNode[ i ][ 0 ] != fInEffectNode[ i ][ 1 ] ){
-      ++fWeight_C[ fInEffectNode[ i ][ 0 ] ];
-      ++fWeight_C[ fInEffectNode[ i ][ 1 ] ];
-    }
-    
-  }
-  for( int s1 = 0; s1 < fNumOfABcycle; ++s1 )
-    fWeight_RR[ s1 ][ s1 ] = 0;
-  
-
-  for( int i = 0; i < fN; ++i ){
-    assert( ( fInEffectNode[ i ][ 0 ] != -1 && fInEffectNode[ i ][ 1 ] != -1 ) ||
-	    ( fInEffectNode[ i ][ 0 ] == -1 && fInEffectNode[ i ][ 1 ] == -1 ) );
-  }
-
-}
-
-
-int Cross::Cal_C_Naive() 
-{
-  int count_C;
-  int tt;
-
-  count_C = 0;
-
-  for( int i = 0; i < fN; ++i ){
-    if( fInEffectNode[ i ][ 0 ] != -1 && fInEffectNode[ i ][ 1 ] != -1 ){
-      tt = 0;
-      if( fUsedAB[ fInEffectNode[ i ][ 0 ] ] == 1 )
-	++tt;
-      if( fUsedAB[ fInEffectNode[ i ][ 1 ] ] == 1 )
-	++tt;
-      if( tt == 1 )
-	++count_C;
-    }
-  }
-  return count_C;
-}
-
-void Cross::Search_Eset( int centerAB ) 
-{
-  int nIter, stagImp;
-  int delta_weight, min_delta_weight_nt;
-  int flag_AddDelete, flag_AddDelete_nt;
-  int selected_AB, selected_AB_nt;
-  int jnum;
-
-  fNum_C = 0;  // Number of C nodes in E-set
-  fNum_E = 0;  // Number of Edges in E-set 
-
-  fNumOfUsedAB = 0;
-  for( int s1 = 0; s1 < fNumOfABcycle; ++s1 ){
-    fUsedAB[ s1 ] = 0;
-    fWeight_SR[ s1 ] = 0;
-    fMoved_AB[ s1 ] = 0;
-  }
-
-  for( int s = 0; s < fNumOfABcycleInEset; ++s )   
-  {
-    jnum = fABcycleInEset[ s ];
-    this->Add_AB( jnum );
-  }
-  fBest_Num_C = fNum_C;
-  fBest_Num_E = fNum_E;
-  
-  stagImp = 0;
-  nIter = 0;
-  while( 1 )
-  { 
-    ++nIter;
-
-    min_delta_weight_nt = 99999999;  
-    flag_AddDelete = 0;
-    flag_AddDelete_nt = 0;
-    for( int s1 = 0; s1 < fNumOfABcycle; ++s1 )
-    {
-      if( fUsedAB[ s1 ] == 0 && fWeight_SR[ s1 ] > 0 )
-      {
-	delta_weight = fWeight_C[ s1 ] - 2 * fWeight_SR[ s1 ];   
-	if( fNum_C + delta_weight < fBest_Num_C ){
-	  selected_AB = s1;
-	  flag_AddDelete = 1;
-	  fBest_Num_C = fNum_C + delta_weight;
-	}
-	if( delta_weight < min_delta_weight_nt && nIter > fMoved_AB[ s1 ] ){
-	  selected_AB_nt = s1;
-	  flag_AddDelete_nt = 1;
-	  min_delta_weight_nt = delta_weight;
-	}
-      }
-      else if( fUsedAB[ s1 ] == 1 && s1 != centerAB )
-      {
-	delta_weight = - fWeight_C[ s1 ] + 2 * fWeight_SR[ s1 ];   
-	if( fNum_C + delta_weight < fBest_Num_C ){
-	  selected_AB = s1;
-	  flag_AddDelete = -1;
-	  fBest_Num_C = fNum_C + delta_weight;
-	}
-	if( delta_weight < min_delta_weight_nt && nIter > fMoved_AB[ s1 ] ){
-	  selected_AB_nt = s1;
-	  flag_AddDelete_nt = -1;
-	  min_delta_weight_nt = delta_weight;
-	}
-      }
-    }
-      
-    if( flag_AddDelete != 0 ){
-      if( flag_AddDelete == 1 ){
-	this->Add_AB( selected_AB );
-      }
-      else if( flag_AddDelete == -1 )
-	this->Delete_AB( selected_AB );
-      
-      fMoved_AB[ selected_AB ] = nIter + Utils::Integer( 1, fTmax ); 
-      assert( fBest_Num_C == fNum_C );
-      fBest_Num_E = fNum_E;
-
-      fNumOfABcycleInEset = 0;
-      for( int s1 = 0; s1 < fNumOfABcycle; ++s1 ){
-	if( fUsedAB[ s1 ] == 1 )
-	  fABcycleInEset[ fNumOfABcycleInEset++ ] = s1;
-      }
-      assert( fNumOfABcycleInEset == fNumOfUsedAB );      
-      stagImp = 0;
-    }
-    else if( flag_AddDelete_nt != 0 ) {
-      if( flag_AddDelete_nt == 1 ){
-	this->Add_AB( selected_AB_nt );
-      }
-      else if( flag_AddDelete_nt == -1 )
-	this->Delete_AB( selected_AB_nt );
-
-      fMoved_AB[ selected_AB_nt ] = nIter + Utils::Integer( 1, fTmax ); 
-    } 
-
-    if( flag_AddDelete == 0 )
-      ++stagImp;
-    if( stagImp == fMaxStag )
-      break;
-  }
-}
-
-
-void Cross::Add_AB( int AB_num )  
-{
-  fNum_C += fWeight_C[ AB_num ] - 2 * fWeight_SR[ AB_num ];   
-  fNum_E += fABcycle[ AB_num ][ 0 ] / 2;  
-
-  assert( fUsedAB[ AB_num ] == 0 );
-  fUsedAB[ AB_num ] = 1;
-  ++fNumOfUsedAB;
-
-  for( int s1 = 0; s1 < fNumOfABcycle; ++s1 ){
-    fWeight_SR[ s1 ] += fWeight_RR[ s1 ][ AB_num ];
-  }
-}
-
-
-void Cross::Delete_AB( int AB_num )  
-{
-  fNum_C -= fWeight_C[ AB_num ] - 2 * fWeight_SR[ AB_num ];   
-  fNum_E -= fABcycle[ AB_num ][ 0 ] / 2;  
-
-  assert( fUsedAB[ AB_num ] == 1 );
-  fUsedAB[ AB_num ] = 0;
-  --fNumOfUsedAB;
-
-  for( int s1 = 0; s1 < fNumOfABcycle; ++s1 ){
-    fWeight_SR[ s1 ] -= fWeight_RR[ s1 ][ AB_num ];
-  }
-}
-
 
 void Cross::CheckValid( Indi& indi )
 {
