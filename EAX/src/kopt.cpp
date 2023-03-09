@@ -1,9 +1,11 @@
-#ifndef __KOPT__
+#include <stdio.h>
+#include <random>
+#include <assert.h>
+
 #include "kopt.h"
-#endif
+#include "evaluator.h"
 
-
-TKopt::TKopt( int N )
+Kopt::Kopt( int N )
 {
   fN = N;
 
@@ -36,7 +38,7 @@ TKopt::TKopt( int N )
   fGene = new int [ fN ];
 }
 
-TKopt::~TKopt()
+Kopt::~Kopt()
 {
   for( int i = 0; i < fN; ++i ) 
     delete [] fLink[ i ];
@@ -69,7 +71,7 @@ TKopt::~TKopt()
 }
 
 
-void TKopt::SetInvNearList()
+void Kopt::SetInvNearList()
 {
   assert( eval->fNearNumMax == 50 );
 
@@ -91,7 +93,7 @@ void TKopt::SetInvNearList()
 }
 
 
-void TKopt::TransIndiToTree( TIndi& indi )
+void Kopt::TransIndiToTree( Indi& indi )
 {
   int num;
   int size;
@@ -172,7 +174,7 @@ void TKopt::TransIndiToTree( TIndi& indi )
 }
 
 
-void TKopt::TransTreeToIndi( TIndi& indi )
+void Kopt::TransTreeToIndi( Indi& indi )
 {
   int t_p, t_n;
   for( int t = 0; t < fN; ++t )
@@ -187,20 +189,19 @@ void TKopt::TransTreeToIndi( TIndi& indi )
 }
 
 
-void TKopt::DoIt( TIndi& tIndi )
+void Kopt::DoIt( Indi& Indi )
 { 
-  this->TransIndiToTree( tIndi );
+  this->TransIndiToTree( Indi );
   //  this->CheckDetail();           // Check
   //  this->CheckValid();            // Check
   this->Sub();
-  this->TransTreeToIndi( tIndi );
+  this->TransTreeToIndi( Indi );
 }
 
 
-void TKopt::Sub()
+void Kopt::Sub()
 {
   int t1_st; 
-  int t_next;
   int dis1, dis2;
   
   for( int t = 0; t < fN; ++t ) 
@@ -275,7 +276,7 @@ LLL1: t1_st = rand()%fN;
 }
 
 
-int TKopt::GetNext( int t )
+int Kopt::GetNext( int t )
 {
   int t_n, seg, orient;
 
@@ -292,7 +293,7 @@ int TKopt::GetNext( int t )
 }
 
 
-int TKopt::GetPrev( int t )
+int Kopt::GetPrev( int t )
 {
   int t_p, seg, orient;
 
@@ -308,7 +309,7 @@ int TKopt::GetPrev( int t )
   return t_p;
 }
 
-void TKopt::Swap(int &a,int &b)
+void Kopt::Swap(int &a,int &b)
 {
   int s;
   s=a;
@@ -316,7 +317,7 @@ void TKopt::Swap(int &a,int &b)
   b=s;
 }
 
-int TKopt::Turn( int &orient )
+int Kopt::Turn( int &orient )
 {
   assert( orient == 0 || orient == 1 );
   if( orient == 0 )
@@ -325,9 +326,10 @@ int TKopt::Turn( int &orient )
     return 0;
   else 
     assert( 1 == 2 );
+  return 0;
 }
 
-void TKopt::IncrementImp( int flagRev )
+void Kopt::IncrementImp( int flagRev )
 {
   int t1_s, t1_e, t2_s, t2_e;
   int seg_t1_s, seg_t1_e, seg_t2_s, seg_t2_e;
@@ -649,7 +651,7 @@ void TKopt::IncrementImp( int flagRev )
 }
 
 
-void TKopt::CombineSeg( int segL, int segS )
+void Kopt::CombineSeg( int segL, int segS )
 {
   int seg;
   int t_s, t_e, direction; t_s = 0; t_e = 0; direction = 0;
@@ -724,7 +726,7 @@ void TKopt::CombineSeg( int segL, int segS )
 
 
 
-void TKopt::CheckDetail()
+void Kopt::CheckDetail()
 {
   int seg, seg_p, seg_n;
   int ord, ord_p, ord_n;
@@ -802,9 +804,9 @@ void TKopt::CheckDetail()
 }
 
 
-void TKopt::CheckValid()
+void Kopt::CheckValid()
 {
-  int t_st, t_c, t_n, st;
+  int t_st, t_c, t_n;
   int count;
   int seg, orient;
   int Invalid = 0;
@@ -849,9 +851,9 @@ void TKopt::CheckValid()
 }
 
 
-void TKopt::MakeRandSol( TIndi& indi )
+void Kopt::MakeRandSol( Indi& indi )
 {
-  int k, r;
+  int r;
 
   for( int j = 0; j < fN; ++j ) 
     fB[j] = j;

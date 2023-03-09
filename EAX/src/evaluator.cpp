@@ -1,8 +1,10 @@
-#ifndef __EVALUATOR__
-#include "evaluator.h"
-#endif
+#include <stdio.h>
+#include <random>
+#include <assert.h>
 
-TEvaluator::TEvaluator()
+#include "evaluator.h"
+
+Evaluator::Evaluator()
 {
   fEdgeDis = NULL;
   fNearCity = NULL;
@@ -11,7 +13,7 @@ TEvaluator::TEvaluator()
   checkedN = nullptr;
 }
 
-TEvaluator::~TEvaluator()
+Evaluator::~Evaluator()
 {
   for ( int i = 0; i < Ncity; ++i ) 
     delete[] fEdgeDis[ i ];
@@ -28,15 +30,16 @@ TEvaluator::~TEvaluator()
   }
 }
 
-void TEvaluator::SetInstance( char filename[] )
+void Evaluator::SetInstance(const char filename[] )
 {
   FILE* fp;
   int n;
-  int *check;
   char word[ 80 ], type[ 80 ];
 
   fp = fopen( filename, "r" );
-
+  if (!fp) {
+      assert(0);
+  }
 
   ////// read instance //////
   while( 1 ){
@@ -69,7 +72,6 @@ void TEvaluator::SetInstance( char filename[] )
   y = new double [ Ncity ];
   checkedN = new int[Ncity];
 
-  int xi, yi; 
   for( int i = 0; i < Ncity; ++i ) 
   {
     fscanf( fp, "%d", &n );
@@ -184,7 +186,7 @@ void TEvaluator::SetInstance( char filename[] )
 }
 
 
-void TEvaluator::DoIt( TIndi& indi )
+void Evaluator::DoIt( Indi& indi )
 {
   int d;
   d = 0;  
@@ -197,7 +199,7 @@ void TEvaluator::DoIt( TIndi& indi )
 }
 
 
-void TEvaluator::WriteTo( FILE* fp, TIndi& indi ) 
+void Evaluator::WriteTo( FILE* fp, Indi& indi ) 
 {
   assert( Ncity == indi.fN );
   int* Array = checkedN;
@@ -238,11 +240,10 @@ void TEvaluator::WriteTo( FILE* fp, TIndi& indi )
 }
 
 
-bool TEvaluator::ReadFrom( FILE* fp, TIndi& indi )
+bool Evaluator::ReadFrom( FILE* fp, Indi& indi )
 {
   assert( Ncity == indi.fN );
   int* Array = checkedN;
-  int curr, next, pre, st, count;
   int N, value;
 
   if( fscanf( fp, "%d %d", &N, &value ) == EOF ) 
@@ -278,7 +279,7 @@ bool TEvaluator::ReadFrom( FILE* fp, TIndi& indi )
 }    
 
 
-bool TEvaluator::CheckValid( int* array, int value )
+bool Evaluator::CheckValid( int* array, int value )
 {
   int* check = checkedN;
   int distance;

@@ -1,65 +1,47 @@
 #ifndef __Cross__
 #define __Cross__
 
-#ifndef __RAND__
-#include "rand.h"
-#endif
-
-#ifndef __Sort__
-#include "sort.h"
-#endif
-
-#ifndef __INDI__
 #include "indi.h"
-#endif
 
-#ifndef __EVALUATOR__
-#include "evaluator.h"
-#endif
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
-
-class TCross {
+class Evaluator;
+class Cross {
 public:
-  TCross( int N );
-  ~TCross();
-  void SetParents( const TIndi& tPa1, const TIndi& tPa2,     /* Set information of the parent tours */
+  Cross( int N );
+  ~Cross();
+  void SetParents( const Indi& tPa1, const Indi& tPa2,     /* Set information of the parent tours */
 		   int flagC[ 10 ], int numOfKids ); 
-  void DoIt( TIndi& tKid, TIndi& tPa2, int numOfKids,        /* Main procedure of EAX */
+  void DoIt( Indi& tKid, Indi& tPa2, int numOfKids,        /* Main procedure of EAX */
 	     int flagP, int flagC[ 10 ], int** fEdgeFreq ); 
-  void SetABcycle( const TIndi& parent1, const TIndi& parent2, /* Step 2 of EAX */
+  void SetABcycle( const Indi& parent1, const Indi& parent2, /* Step 2 of EAX */
 		   int flagC[ 10 ], int numOfKids );
   void FormABcycle();                                   /* Store an AB-cycle found */
   void Swap(int &a,int &b);                             /* Swap */ 
-  void ChangeSol( TIndi& tKid, int ABnum, int type );   /* Apply an AB-cycle to an intermediate solution */
-  void MakeCompleteSol( TIndi& tKid );                  /* Step 5 of EAX */
+  void ChangeSol( Indi& tKid, int ABnum, int type );   /* Apply an AB-cycle to an intermediate solution */
+  void MakeCompleteSol( Indi& tKid );                  /* Step 5 of EAX */
   void MakeUnit();                                      /* Step 5-1 of EAX */ 
-  void BackToPa1( TIndi& tKid );                        /* Undo the parent p_A */
-  void GoToBest( TIndi& tKid );                         /* Modify tKid to the best offspring solution */
+  void BackToPa1( Indi& tKid );                        /* Undo the parent p_A */
+  void GoToBest( Indi& tKid );                         /* Modify tKid to the best offspring solution */
   void IncrementEdgeFreq( int **fEdgeFreq );            /* Increment fEdgeFreq[][] */
   int Cal_ADP_Loss( int **fEdgeFreq );                  /* Compute the difference in the averate distance */
   double Cal_ENT_Loss( int **fEdgeFreq );               /* Compute the difference in the edge entropy */
 
-  void SetWeight( const TIndi& parent1, const TIndi& parent2 ); /* Block2 */
+  void SetWeight( const Indi& parent1, const Indi& parent2 ); /* Block2 */
   int Cal_C_Naive();                                            /* Block2 */
   void Search_Eset( int num );                                  /* Block2 */
   void Add_AB( int AB_num );                                    /* Block2 */
   void Delete_AB( int AB_num );                                 /* Block2 */
 
-  void CheckValid( TIndi& indi );                               /* For debug */
+  void CheckValid( Indi& indi );                               /* For debug */
 
 
   int fNumOfGeneratedCh;
-  TEvaluator* eval;			 
+  Evaluator* eval;			 
   int fNumOfPop;
   
 private:
   int fFlagImp;         
   int fN;
-  TIndi tBestTmp;
+  Indi tBestTmp;
   int r,exam;
   int exam_flag;
   int **near_data;

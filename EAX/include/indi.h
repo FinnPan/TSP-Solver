@@ -1,25 +1,24 @@
 #ifndef __INDI__
 #define __INDI__
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
-
-class TIndi {
+class Utils {
 public:
-  TIndi();
-  ~TIndi();
+	static void Permutation(int* array, int numOfelement, int numOfSample);
+	static int Integer(int minNumber, int maxNumber);
+	static void Index_B(int* Arg, int numOfArg, int* indexOrderd, int numOfOrd);
+};
+
+class Indi {
+public:
+  Indi();
+  ~Indi();
   void Define( int N );
-  TIndi& operator = ( const TIndi& src );   /* Copy */
-  bool operator == (  const TIndi& indi2 ); /* Return true if two tours are the same, false otherwise */
+  Indi& operator = ( const Indi& src );   /* Copy */
+  bool operator == (  const Indi& indi2 ); /* Return true if two tours are the same, false otherwise */
 
   int fN;                 /* Number of cities */
   int** fLink;            /* fLink[i][]: two vertices adjacent to i */
   int fEvaluationValue;   /* Tour length of */
 };
 
-
 #endif
-

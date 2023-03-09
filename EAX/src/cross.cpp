@@ -1,9 +1,10 @@
-#ifndef __Cross__
+#include <random>
+#include <assert.h>
+#include <algorithm>
+#include "Evaluator.h"
 #include "cross.h"
-#endif
 
-
-TCross::TCross( int N )
+Cross::Cross( int N )
 {
   fMaxNumOfABcycle = 2000; /* Set an appropriate value (2000 is usually enough) */
 
@@ -76,7 +77,7 @@ TCross::TCross( int N )
   fABcycleInEset = new int [ fMaxNumOfABcycle ];
 }
 
-TCross::~TCross()
+Cross::~Cross()
 {
   delete [] koritsu;
   delete [] bunki;
@@ -145,7 +146,7 @@ TCross::~TCross()
   delete [] fABcycleInEset;
 }
 
-void TCross::SetParents( const TIndi& tPa1, const TIndi& tPa2, int flagC[ 10 ], int numOfKids )
+void Cross::SetParents( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int numOfKids )
 {
   this->SetABcycle( tPa1, tPa2, flagC, numOfKids ); 
 
@@ -181,7 +182,7 @@ void TCross::SetParents( const TIndi& tPa1, const TIndi& tPa2, int flagC[ 10 ], 
 }
 
 
-void TCross::DoIt( TIndi& tKid, TIndi& tPa2, int numOfKids, int flagP, int flagC[ 10 ], int **fEdgeFreq )
+void Cross::DoIt( Indi& tKid, Indi& tPa2, int numOfKids, int flagP, int flagC[ 10 ], int **fEdgeFreq )
 {
   int Num;     
   int jnum, centerAB; 
@@ -202,12 +203,12 @@ void TCross::DoIt( TIndi& tKid, TIndi& tPa2, int numOfKids, int flagP, int flagC
     Num = fNumOfABcycle;
 
   if( fEsetType == 1 ){         /* Single-AB */
-    tRand->Permutation( fPermu, fNumOfABcycle, fNumOfABcycle ); 
+    Utils::Permutation( fPermu, fNumOfABcycle, fNumOfABcycle ); 
   }
   else if( fEsetType == 2 ){    /* Block2 */
     for( int k =0; k< fNumOfABcycle; ++k )
       fNumOfElementINAB[ k ] = fABcycle[ k ][ 0 ];
-    tSort->Index_B( fNumOfElementINAB, fNumOfABcycle, fPermu, fNumOfABcycle );
+    Utils::Index_B( fNumOfElementINAB, fNumOfABcycle, fPermu, fNumOfABcycle );
   }
 
 
@@ -307,7 +308,7 @@ void TCross::DoIt( TIndi& tKid, TIndi& tPa2, int numOfKids, int flagP, int flagC
 }
 
 
-void TCross::SetABcycle( const TIndi& tPa1, const TIndi& tPa2, int flagC[ 10 ], int numOfKids )
+void Cross::SetABcycle( const Indi& tPa1, const Indi& tPa2, int flagC[ 10 ], int numOfKids )
 {
   bunki_many=0; koritsu_many=0;
   for( int j = 0; j < fN ; ++j )
@@ -494,7 +495,7 @@ LLL: ;
 }
 
 
-void TCross::FormABcycle()
+void Cross::FormABcycle()
 {
   int j;
   int st_count;
@@ -568,7 +569,7 @@ void TCross::FormABcycle()
 }
 
 
-void TCross::Swap(int &a,int &b)
+void Cross::Swap(int &a,int &b)
 {
   int s;
   s=a;
@@ -577,7 +578,7 @@ void TCross::Swap(int &a,int &b)
 }
 
 
-void TCross::ChangeSol( TIndi& tKid, int ABnum, int type )
+void Cross::ChangeSol( Indi& tKid, int ABnum, int type )
 {
   int j;
   int cem,r1,r2,b1,b2;
@@ -630,21 +631,15 @@ void TCross::ChangeSol( TIndi& tKid, int ABnum, int type )
 }
 
 
-void TCross::MakeCompleteSol( TIndi& tKid )
+void Cross::MakeCompleteSol( Indi& tKid )
 {
-  int j,j1,j2,j3;
-  int st,ci,pre,curr,next,a,b,c,d,aa,bb,a1,b1;
-  int city_many;
-  int remain_unit_many;
-  int ucm;
-  int unit_num;
+  int j,j1,j2;
+  int st,pre,curr,next,a,b,c,d,aa,bb,a1,b1;
   int min_unit_city; 
   int near_num;
-  int unit_many;               
   int center_un;               
   int select_un;               
   int diff,max_diff;
-  int count;      
   int nearMax;
 
   fGainModi = 0;         
@@ -809,7 +804,7 @@ void TCross::MakeCompleteSol( TIndi& tKid )
 }  
 
 
-void TCross::MakeUnit()                    
+void Cross::MakeUnit()                    
 {
   int flag = 1; 
   for( int s = 0; s < fNumOfSPL; ++s ){
@@ -829,7 +824,7 @@ void TCross::MakeUnit()
 
   }
 
-  tSort->Sort( fSegPosiList, fNumOfSPL );     
+  std::sort( fSegPosiList, fSegPosiList + fNumOfSPL );
 
 
   fNumOfSeg = fNumOfSPL;
@@ -920,7 +915,7 @@ void TCross::MakeUnit()
 }
 
 
-void TCross::BackToPa1( TIndi& tKid )
+void Cross::BackToPa1( Indi& tKid )
 {
   int aa, bb, a1, b1; 
   int jnum;
@@ -947,7 +942,7 @@ void TCross::BackToPa1( TIndi& tKid )
   }
 }
 
-void TCross::GoToBest( TIndi& tKid )
+void Cross::GoToBest( Indi& tKid )
 {
   int aa, bb, a1, b1; 
   int jnum;
@@ -976,7 +971,7 @@ void TCross::GoToBest( TIndi& tKid )
 }
 
 
-void TCross::IncrementEdgeFreq( int **fEdgeFreq )
+void Cross::IncrementEdgeFreq( int **fEdgeFreq )
 {
   int j, jnum, cem;
   int r1, r2, b1, b2;
@@ -1028,13 +1023,12 @@ void TCross::IncrementEdgeFreq( int **fEdgeFreq )
 }
 
 
-int TCross::Cal_ADP_Loss( int **fEdgeFreq )
+int Cross::Cal_ADP_Loss( int **fEdgeFreq )
 {
   int j, jnum, cem;
   int r1, r2, b1, b2;
   int aa, bb, a1;
   double DLoss; 
-  double h1, h2;
 
   
   DLoss = 0;
@@ -1152,7 +1146,7 @@ int TCross::Cal_ADP_Loss( int **fEdgeFreq )
 }
 
 
-double TCross::Cal_ENT_Loss( int **fEdgeFreq )
+double Cross::Cal_ENT_Loss( int **fEdgeFreq )
 {
   int j, jnum, cem;
   int r1, r2, b1, b2;
@@ -1293,7 +1287,7 @@ double TCross::Cal_ENT_Loss( int **fEdgeFreq )
 }
 
 
-void TCross::SetWeight( const TIndi& tPa1, const TIndi& tPa2 ) 
+void Cross::SetWeight( const Indi& tPa1, const Indi& tPa2 ) 
 {
   int cem;
   int r1, r2, v1, v2, v_p;
@@ -1397,7 +1391,7 @@ void TCross::SetWeight( const TIndi& tPa1, const TIndi& tPa2 )
 }
 
 
-int TCross::Cal_C_Naive() 
+int Cross::Cal_C_Naive() 
 {
   int count_C;
   int tt;
@@ -1418,13 +1412,12 @@ int TCross::Cal_C_Naive()
   return count_C;
 }
 
-void TCross::Search_Eset( int centerAB ) 
+void Cross::Search_Eset( int centerAB ) 
 {
   int nIter, stagImp;
   int delta_weight, min_delta_weight_nt;
   int flag_AddDelete, flag_AddDelete_nt;
   int selected_AB, selected_AB_nt;
-  int t_max;
   int jnum;
 
   fNum_C = 0;  // Number of C nodes in E-set
@@ -1493,7 +1486,7 @@ void TCross::Search_Eset( int centerAB )
       else if( flag_AddDelete == -1 )
 	this->Delete_AB( selected_AB );
       
-      fMoved_AB[ selected_AB ] = nIter + tRand->Integer( 1, fTmax ); 
+      fMoved_AB[ selected_AB ] = nIter + Utils::Integer( 1, fTmax ); 
       assert( fBest_Num_C == fNum_C );
       fBest_Num_E = fNum_E;
 
@@ -1512,7 +1505,7 @@ void TCross::Search_Eset( int centerAB )
       else if( flag_AddDelete_nt == -1 )
 	this->Delete_AB( selected_AB_nt );
 
-      fMoved_AB[ selected_AB_nt ] = nIter + tRand->Integer( 1, fTmax ); 
+      fMoved_AB[ selected_AB_nt ] = nIter + Utils::Integer( 1, fTmax ); 
     } 
 
     if( flag_AddDelete == 0 )
@@ -1523,7 +1516,7 @@ void TCross::Search_Eset( int centerAB )
 }
 
 
-void TCross::Add_AB( int AB_num )  
+void Cross::Add_AB( int AB_num )  
 {
   fNum_C += fWeight_C[ AB_num ] - 2 * fWeight_SR[ AB_num ];   
   fNum_E += fABcycle[ AB_num ][ 0 ] / 2;  
@@ -1538,7 +1531,7 @@ void TCross::Add_AB( int AB_num )
 }
 
 
-void TCross::Delete_AB( int AB_num )  
+void Cross::Delete_AB( int AB_num )  
 {
   fNum_C -= fWeight_C[ AB_num ] - 2 * fWeight_SR[ AB_num ];   
   fNum_E -= fABcycle[ AB_num ][ 0 ] / 2;  
@@ -1553,7 +1546,7 @@ void TCross::Delete_AB( int AB_num )
 }
 
 
-void TCross::CheckValid( TIndi& indi )
+void Cross::CheckValid( Indi& indi )
 {
   int curr, pre, next, st;
   int count;

@@ -1,24 +1,28 @@
-#ifndef __ENVIRONMENT__
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <time.h>
+
+#include "Evaluator.h"
+#include "Cross.h"
+#include "Kopt.h"
 #include "env.h"
-#endif
-
-#include <math.h> 
      
-void MakeRandSol( TEvaluator* eval , TIndi& indi );
-void Make2optSol( TEvaluator* eval , TIndi& indi );
+void MakeRandSol( Evaluator* eval , Indi& indi );
+void Make2optSol( Evaluator* eval , Indi& indi );
 
-TEnvironment::TEnvironment()
+Environment::Environment()
 {
-  fEvaluator = new TEvaluator();
+  fEvaluator = new Evaluator();
 }
 
 
-TEnvironment::~TEnvironment()
+Environment::~Environment()
 {
   delete [] fIndexForMating;
   delete [] tCurPop;
   delete fEvaluator;
-  delete tCross;
+  delete fCross;
 
   int N = fEvaluator->Ncity;
   for( int i = 0; i < N; ++i ) 
@@ -27,26 +31,27 @@ TEnvironment::~TEnvironment()
 }
 
 
-void TEnvironment::Define()
+void Environment::Define()
 {
+  srand(1111);
   fEvaluator->SetInstance( fFileNameTSP );
   int N = fEvaluator->Ncity;
 
   fIndexForMating = new int [ fNumOfPop + 1 ];  
 
-  tCurPop = new TIndi [ fNumOfPop ];
+  tCurPop = new Indi [ fNumOfPop ];
   for ( int i = 0; i < fNumOfPop; ++i )
     tCurPop[i].Define( N );
 
   tBest.Define( N );
 
-  tCross = new TCross( N );
-  tCross->eval = fEvaluator;                 
-  tCross->fNumOfPop = fNumOfPop;             
+  fCross = new Cross( N );
+  fCross->eval = fEvaluator;                 
+  fCross->fNumOfPop = fNumOfPop;             
 
-  tKopt = new TKopt( N );
-  tKopt->eval = fEvaluator;
-  tKopt->SetInvNearList();
+  fKopt = new Kopt( N );
+  fKopt->eval = fEvaluator;
+  fKopt->SetInvNearList();
 
   fEdgeFreq = new int* [ N ]; 
   for( int i = 0; i < N; ++i ) 
@@ -54,14 +59,11 @@ void TEnvironment::Define()
 }
 
 
-void TEnvironment::DoIt()
+void Environment::DoIt()
 {
   this->fTimeStart = clock();   
 
-  if( fFileNameInitPop == NULL )
-    this->InitPop();                       
-  else
-    this->ReadPop( fFileNameInitPop );     
+  this->InitPop();                       
 
   this->fTimeInit = clock();    
 
@@ -89,7 +91,7 @@ void TEnvironment::DoIt()
 }
  
 
-void TEnvironment::Init()
+void Environment::Init()
 {
   fAccumurateNumCh = 0;
   fCurNumOfGen = 0;
@@ -101,7 +103,7 @@ void TEnvironment::Init()
 } 
 
 
-bool TEnvironment::TerminationCondition()
+bool Environment::TerminationCondition()
 {
   if ( fAverageValue - fBestValue < 0.001 )  
     return true;
@@ -135,7 +137,7 @@ bool TEnvironment::TerminationCondition()
 }
 
 
-void TEnvironment::SetAverageBest() 
+void Environment::SetAverageBest() 
 {
   int stockBest = tBest.fEvaluationValue;
   
@@ -163,40 +165,40 @@ void TEnvironment::SetAverageBest()
 }
 
 
-void TEnvironment::InitPop()
+void Environment::InitPop()
 {
   for ( int i = 0; i < fNumOfPop; ++i ){ 
-    tKopt->MakeRandSol( tCurPop[ i ] );    /* Make a random tour */
-    tKopt->DoIt( tCurPop[ i ] );           /* Apply the local search with the 2-opt neighborhood */ 
+    fKopt->MakeRandSol( tCurPop[ i ] );    /* Make a random tour */
+    fKopt->DoIt( tCurPop[ i ] );           /* Apply the local search with the 2-opt neighborhood */ 
   }
 }
 
 
-void TEnvironment::SelectForMating()
+void Environment::SelectForMating()
 {
   /* fIndexForMating[] <-- a random permutation of 0, ..., fNumOfPop-1 */
-  tRand->Permutation( fIndexForMating, fNumOfPop, fNumOfPop ); 
+  Utils::Permutation( fIndexForMating, fNumOfPop, fNumOfPop ); 
   fIndexForMating[ fNumOfPop ] = fIndexForMating[ 0 ];
 }
 
-void TEnvironment::SelectForSurvival( int s )
+void Environment::SelectForSurvival( int s )
 {
 }
 
 
-void TEnvironment::GenerateKids( int s )
+void Environment::GenerateKids( int s )
 {
-  tCross->SetParents( tCurPop[fIndexForMating[s]], tCurPop[fIndexForMating[s+1]], fFlagC, fNumOfKids );  
+  fCross->SetParents( tCurPop[fIndexForMating[s]], tCurPop[fIndexForMating[s+1]], fFlagC, fNumOfKids );  
   
   /* Note: tCurPop[fIndexForMating[s]] is replaced with a best offspring solutions in tCorss->DoIt(). 
      fEegeFreq[][] is also updated there. */
-  tCross->DoIt( tCurPop[fIndexForMating[s]], tCurPop[fIndexForMating[s+1]], fNumOfKids, 1, fFlagC, fEdgeFreq );
+  fCross->DoIt( tCurPop[fIndexForMating[s]], tCurPop[fIndexForMating[s+1]], fNumOfKids, 1, fFlagC, fEdgeFreq );
 
-  fAccumurateNumCh += tCross->fNumOfGeneratedCh;
+  fAccumurateNumCh += fCross->fNumOfGeneratedCh;
 }
 
 
-void TEnvironment::GetEdgeFreq()
+void Environment::GetEdgeFreq()
 {
   int N = fEvaluator->Ncity;
   int k0, k1;
@@ -219,7 +221,7 @@ void TEnvironment::GetEdgeFreq()
 }
 
 
-void TEnvironment::PrintOn( int n, char* dstFile ) 
+void Environment::PrintOn( int n, char* dstFile ) 
 {
   printf( "n = %d val = %d Gen = %d Time = %d %d\n" , 
 	  n, 
@@ -245,7 +247,7 @@ void TEnvironment::PrintOn( int n, char* dstFile )
 }
 
 
-void TEnvironment::WriteBest( char* dstFile ) 
+void Environment::WriteBest( char* dstFile ) 
 {
   FILE *fp;
   char filename[ 80 ];
@@ -258,7 +260,7 @@ void TEnvironment::WriteBest( char* dstFile )
 }
 
 
-void TEnvironment::WritePop( int n, char* dstFile ) 
+void Environment::WritePop( int n, char* dstFile ) 
 {
   FILE *fp;
   char filename[ 80 ];
@@ -270,26 +272,3 @@ void TEnvironment::WritePop( int n, char* dstFile )
 
   fclose( fp );
 }
-
-
-void TEnvironment::ReadPop( char* fileName )
-{
-  FILE* fp;
-
-  if( ( fp = fopen( fileName, "r" ) ) == NULL ){
-    printf( "Read Error1\n"); 
-    fflush( stdout );
-    exit( 1 );
-  }
-
-  for ( int i = 0; i < fNumOfPop; ++i ){ 
-    if( fEvaluator->ReadFrom( fp, tCurPop[ i ] ) == false ){
-      printf( "Read Error2\n"); 
-      fflush( stdout );
-      exit( 1 );
-    }
-  }
-  fclose( fp );
-}
-
-

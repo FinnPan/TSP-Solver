@@ -30,12 +30,6 @@
     <ClInclude Include="include\kopt.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\rand.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\sort.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cross.cpp">
@@ -54,12 +48,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rand.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sort.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

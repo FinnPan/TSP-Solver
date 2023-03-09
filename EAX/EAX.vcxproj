@@ -133,8 +133,6 @@
     <ClInclude Include="include\evaluator.h" />
     <ClInclude Include="include\indi.h" />
     <ClInclude Include="include\kopt.h" />
-    <ClInclude Include="include\rand.h" />
-    <ClInclude Include="include\sort.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cross.cpp" />
@@ -143,8 +141,6 @@
     <ClCompile Include="src\indi.cpp" />
     <ClCompile Include="src\kopt.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\rand.cpp" />
-    <ClCompile Include="src\sort.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

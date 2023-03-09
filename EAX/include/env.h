@@ -1,36 +1,16 @@
 #ifndef __ENVIRONMENT__
 #define __ENVIRONMENT__
 
-#ifndef __INDI__
+#include "time.h"
 #include "indi.h"
-#endif
 
-#ifndef __RAND__
-#include "rand.h"
-#endif
-
-#ifndef __EVALUATOR__
-#include "evaluator.h"
-#endif
-
-#ifndef __Cross__
-#include "cross.h"
-#endif
-
-#ifndef __KOPT__
-#include "kopt.h"
-#endif
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <time.h>
-
-class TEnvironment {
+class Evaluator;
+class Kopt;
+class Cross;
+class Environment {
 public:
-  TEnvironment(); 
-  ~TEnvironment();
+  Environment(); 
+  ~Environment();
   void Define();                         /* Define the variables */
 
   void DoIt();                           /* Main procedure of the GA */
@@ -48,19 +28,17 @@ public:
   void PrintOn( int n, char* dstFile );  /* Display and write summary of results */
   void WriteBest( char* dstFile );       /* Write the best tour */
   void WritePop( int n, char* dstFile ); /* Write the population */
-  void ReadPop( char* fileName );        /* Read an initial population */
 
 
-  TEvaluator* fEvaluator;                /* Distance of the edges */
-  TCross* tCross;                        /* Eede assembly crossover */
-  TKopt* tKopt;                          /* Local search with the 2-opt neighborhood */
-  char *fFileNameTSP;                    /* File name of an TSP instance */
-  char *fFileNameInitPop;                /* File name of an initial population */
+  Evaluator* fEvaluator;                /* Distance of the edges */
+  Cross* fCross;                        /* Eede assembly crossover */
+  Kopt* fKopt;                          /* Local search with the 2-opt neighborhood */
+  const char *fFileNameTSP;                    /* File name of an TSP instance */
 
   int fNumOfPop;                         /* Number of population members (N_pop in the paper) */
   int fNumOfKids;                        /* Number of offspring solutions (N_ch in the paper) */
-  TIndi* tCurPop;                        /* Current population members */
-  TIndi tBest;                           /* Best solution in the current population */
+  Indi* tCurPop;                        /* Current population members */
+  Indi tBest;                           /* Best solution in the current population */
   int fCurNumOfGen;                      /* The current number of generations */
   long int fAccumurateNumCh;             /* The accumulated number of offspring solutions */
   int fBestNumOfGen;                     /* The number of generations at which the current best 

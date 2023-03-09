@@ -1,35 +1,18 @@
 #ifndef __KOPT__
 #define __KOPT__
 
-#ifndef __RAND__
-#include "rand.h"
-#endif
-
-#ifndef __Sort__
-#include "sort.h"
-#endif
-
-#ifndef __INDI__
 #include "indi.h"
-#endif
 
-#ifndef __EVALUATOR__
-#include "evaluator.h"
-#endif
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
-class TKopt {
+class Evaluator;
+class Kopt {
 public:
-  TKopt( int N );
-  ~TKopt();
+  Kopt( int N );
+  ~Kopt();
   void SetInvNearList();
-  void TransIndiToTree( TIndi& indi );
-  void TransTreeToIndi( TIndi& indi );
+  void TransIndiToTree( Indi& indi );
+  void TransTreeToIndi( Indi& indi );
 
-  void DoIt( TIndi& tIndi );             /* Apply a local search with the 2-opt neighborhood */
+  void DoIt( Indi& Indi );             /* Apply a local search with the 2-opt neighborhood */
   void Sub();
   int GetNext( int t );
   int GetPrev( int t );
@@ -42,10 +25,9 @@ public:
   void Swap(int &a,int &b);
   int Turn( int &orient );
 
-  void MakeRandSol( TIndi& indi );      /* Set a random tour */
+  void MakeRandSol( Indi& indi );      /* Set a random tour */
 
-
-  TEvaluator* eval;
+  Evaluator* eval;
 
 private:
   int fN;
@@ -77,4 +59,3 @@ private:
 };
 
 #endif
-

@@ -1,22 +1,16 @@
 #ifndef __EVALUATOR__
 #define __EVALUATOR__
 
-#ifndef __INDI__
 #include "indi.h"
-#endif
 
-
-#include <string.h>
-#include <assert.h>
-
-class TEvaluator {
+class Evaluator {
  public:
-  TEvaluator();
-  ~TEvaluator();
-  void SetInstance( char filename[] );       /* Set the instance */
-  void DoIt( TIndi& indi );                  /* Set the value of indi.fEvaluationValue */
-  void WriteTo( FILE* fp, TIndi& indi );     /* Write an tour */
-  bool ReadFrom( FILE* fp, TIndi& indi );    /* Read an tour */
+  Evaluator();
+  ~Evaluator();
+  void SetInstance( const char filename[] );       /* Set the instance */
+  void DoIt( Indi& indi );                  /* Set the value of indi.fEvaluationValue */
+  void WriteTo( FILE* fp, Indi& indi );     /* Write an tour */
+  bool ReadFrom( FILE* fp, Indi& indi );    /* Read an tour */
   bool CheckValid( int* array, int value ); /* Check an tour */ 
 
   int fNearNumMax;  /* Maximum number of k (see below) */
@@ -29,6 +23,3 @@ class TEvaluator {
 };
 
 #endif
-
-
-
