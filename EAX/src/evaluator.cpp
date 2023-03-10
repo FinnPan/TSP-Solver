@@ -85,50 +85,17 @@ void Evaluator::SetInstance(const char filename[] )
   fclose(fp);
   //////////////////////////
 
-  fEdgeDis = new int* [ Ncity ];
-  for( int i = 0; i < Ncity; ++i ) fEdgeDis[ i ] = new int [ Ncity ];
+  fEdgeDis = new EvalType* [ Ncity ];
+  for( int i = 0; i < Ncity; ++i ) fEdgeDis[ i ] = new EvalType[ Ncity ];
   fNearCity = new int* [ Ncity ];
   for( int i = 0; i < Ncity; ++i ) fNearCity[ i ] = new int [ fNearNumMax+1 ];
-
-  /////////////// Remove duplicated nodes /////////////
-  /*
-  check = new int [ Ncity ];
-  for( int i = 0; i < Ncity; ++i )
-    check[ i ] = 0;
-  
-  for( int i = 0; i < Ncity ; ++i )
-  {
-    for( int j = 0; j < i ; ++j )
-    {
-      fEdgeDis[i][j]=(int)(sqrt((x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j]))+0.5);
-      if( x[i] == x[j] && y[i] == y[j] )
-	check[ i ] = 1;
-    }
-  }
-
-  n = 0;
-  for( int i = 0; i < Ncity ; ++i ){
-    if( check[ i ] == 0 ){
-      x[ n ] = x[ i ];
-      y[ n ] = y[ i ];
-      ++n;
-    }
-  }
-  if( Ncity != n ){
-    printf( "Ncity is changed %d to %d\n", Ncity, n ); 
-    Ncity = n;
-  }
-  delete [] check;
-  */
-  ////////////////////////////////////////////////////
-
 
   if( strcmp( type, "EUC_2D" ) == 0  ) {
     for( int i = 0; i < Ncity ; ++i )
     {
       for( int j = 0; j < Ncity ; ++j )
       {
-	fEdgeDis[ i ][ j ]=(int)(sqrt((x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j]))+0.5);
+	fEdgeDis[ i ][ j ]=(EvalType)(sqrt((x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j]))+0.5);
       }
     }
   }
@@ -138,7 +105,7 @@ void Evaluator::SetInstance(const char filename[] )
       for( int j = 0; j < Ncity; ++j ) 
       {
 	double r = (sqrt(((x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j]))/10.0));
-	int t = (int)r;
+	EvalType t = (EvalType)r;
 	if( (double)t < r ) fEdgeDis[ i ][ j ] = t+1;
 	else fEdgeDis[ i ][ j ] = t; 
       }
@@ -149,7 +116,7 @@ void Evaluator::SetInstance(const char filename[] )
     {
       for( int j = 0; j < Ncity ; ++j )
       {
-	fEdgeDis[ i ][ j ]=(int)ceil(sqrt((x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j])));
+	fEdgeDis[ i ][ j ]=(EvalType)ceil(sqrt((x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j])));
       }
     }
   }
@@ -161,7 +128,7 @@ void Evaluator::SetInstance(const char filename[] )
   int ci;
   int j1 ,j2 ,j3;
   int city_num = 0;
-  int min_dis;
+  EvalType min_dis;
 
   for( ci = 0; ci < Ncity; ++ci )
   {
@@ -170,7 +137,7 @@ void Evaluator::SetInstance(const char filename[] )
     fNearCity[ ci ][ 0 ] = ci;
     for( j1 = 1; j1 <= fNearNumMax; ++j1 ) 
     {
-      min_dis = 100000000;
+      min_dis = std::numeric_limits<EvalType>::max();
       for( j2 = 0; j2 < Ncity; ++j2 )
       { 
 	if( fEdgeDis[ ci ][ j2 ] <= min_dis && checkedN[ j2 ] == 0 )
@@ -186,10 +153,9 @@ void Evaluator::SetInstance(const char filename[] )
 }
 
 
-void Evaluator::DoIt( Indi& indi )
+void Evaluator::DoIt( Indi& indi ) const
 {
-  int d;
-  d = 0;  
+  EvalType d = 0;
   for( int i = 0; i < Ncity; ++i )
   {  
     d = d + fEdgeDis[ i ][ indi.fLink[i][0] ];
@@ -233,56 +199,16 @@ void Evaluator::WriteTo( FILE* fp, Indi& indi )
     printf( "Individual is invalid \n" );
   }
 
-  fprintf( fp, "%d %d\n", indi.fN, indi.fEvaluationValue );
+  fprintf( fp, "%d %lld\n", indi.fN, indi.fEvaluationValue );
   for( int i = 0; i < indi.fN; ++i )
     fprintf( fp, "%d ", Array[ i ] );
   fprintf( fp, "\n" ); 
 }
 
-
-bool Evaluator::ReadFrom( FILE* fp, Indi& indi )
-{
-  assert( Ncity == indi.fN );
-  int* Array = checkedN;
-  int N, value;
-
-  if( fscanf( fp, "%d %d", &N, &value ) == EOF ) 
-    return false;
-  assert( N == Ncity );
-  indi.fN = N;
-  indi.fEvaluationValue = value;
-
-  for( int i = 0; i < Ncity; ++i ){ 
-    if( fscanf( fp, "%d", &Array[ i ] ) == EOF )
-      return false;
-  }
-
-  if( this->CheckValid( Array, indi.fEvaluationValue ) == false ){
-    printf( "Individual is invalid \n" );
-    return false;
-  }
-
-  for( int i = 0; i < Ncity; ++i ){ 
-    Array[ i ] -= 1; 
-  }
-
-  for( int i = 1; i < Ncity-1; ++i ){ 
-    indi.fLink[ Array[ i ] ][ 0 ] = Array[ i-1 ]; 
-    indi.fLink[ Array[ i ] ][ 1 ] = Array[ i+1 ]; 
-  }
-  indi.fLink[ Array[ 0 ] ][ 0 ] = Array[ Ncity-1 ]; 
-  indi.fLink[ Array[ 0 ] ][ 1 ] = Array[ 1 ]; 
-  indi.fLink[ Array[ Ncity-1 ] ][ 0 ] = Array[ Ncity-2 ]; 
-  indi.fLink[ Array[ Ncity-1 ] ][ 1 ] = Array[ 0 ]; 
-
-  return true;
-}    
-
-
-bool Evaluator::CheckValid( int* array, int value )
+bool Evaluator::CheckValid( int* array, EvalType value )
 {
   int* check = checkedN;
-  int distance;
+  EvalType distance;
 
   for( int i = 0; i < Ncity; ++i ){
     check[ i ] = 0;

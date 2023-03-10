@@ -169,7 +169,6 @@ void Kopt::TransIndiToTree( Indi& indi )
   fLinkSeg[ fNumOfSeg-1 ][ 0 ] = fNumOfSeg-2;
   fLinkSeg[ fNumOfSeg-1 ][ 1 ] = 0;
 
-  fTourLength = indi.fEvaluationValue;
   fFixNumOfSeg = fNumOfSeg;
 }
 
@@ -202,7 +201,7 @@ void Kopt::DoIt( Indi& Indi )
 void Kopt::Sub()
 {
   int t1_st; 
-  int dis1, dis2;
+  EvalType dis1, dis2;
   
   for( int t = 0; t < fN; ++t ) 
     fActiveV[ t ] = 1;

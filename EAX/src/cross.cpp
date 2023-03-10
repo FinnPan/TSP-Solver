@@ -9,7 +9,6 @@ Cross::Cross( int N )
   fMaxNumOfABcycle = 2000; /* Set an appropriate value (2000 is usually enough) */
 
   fN = N;
-  tBestTmp.Define( fN );
 
   near_data = new int* [ fN ];
   for ( int j = 0; j < fN; ++j ) 
@@ -51,7 +50,7 @@ Cross::Cross( int N )
     fCenterUnit[ j ] = 0;
   fListOfCenterUnit = new int [ fN+2 ]; 
   fSegForCenter = new int [ fN ]; 
-  fGainAB = new int [ fN ]; 
+  fGainAB = new EvalType [ fN ]; 
   fModiEdge = new int* [ fN ]; 				 
   for ( int j = 0; j < fN; ++j ) 
     fModiEdge[ j ] = new int [ 4 ]; 				 
@@ -156,8 +155,8 @@ void Cross::DoIt( Indi& tKid, Indi& tPa2, int numOfKids, int flagP)
 {
   int Num;     
   int jnum; 
-  int gain;
-  int BestGain;  
+  EvalType gain;
+  EvalType BestGain;  
   double pointMax, point;
 
   if ( numOfKids <= fNumOfABcycle ) 
@@ -427,7 +426,7 @@ void Cross::FormABcycle()
   int edge_type;
   int st,ci, stock;
   int cem;                   
-  int diff;
+  EvalType diff;
  
   if(fPosiCurr%2==0) edge_type=1; 
   else edge_type=2;               
@@ -554,7 +553,7 @@ void Cross::MakeCompleteSol( Indi& tKid )
   int near_num;
   int center_un;               
   int select_un;               
-  int diff,max_diff;
+  EvalType diff,max_diff;
   int nearMax;
 
   fGainModi = 0;         
@@ -604,7 +603,7 @@ void Cross::MakeCompleteSol( Indi& tKid )
 
     assert( fNumOfElementInCU == fNumOfElementInUnit[ center_un ] );
 
-    max_diff = -999999999;
+    max_diff = std::numeric_limits<EvalType>::min();
     a1 = -1; b1 = -1;
     nearMax = 10; /* N_near (see Step 5.3 in Section 2.2 of the Online Supplement) */
     /* nearMax must be smaller than or equal to eva->fNearNumMax (kopt.cpp ) */

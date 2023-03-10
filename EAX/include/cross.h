@@ -12,6 +12,12 @@ public:
 		   int numOfKids ); 
   void DoIt( Indi& tKid, Indi& tPa2, int numOfKids,        /* Main procedure of EAX */
 			int flagP ); 
+
+  int fNumOfGeneratedCh;
+  const Evaluator* eval;
+  int fNumOfPop;
+
+private:
   void SetABcycle( const Indi& parent1, const Indi& parent2, /* Step 2 of EAX */
 		   int numOfKids );
   void FormABcycle();                                   /* Store an AB-cycle found */
@@ -22,15 +28,10 @@ public:
   void GoToBest( Indi& tKid );                         /* Modify tKid to the best offspring solution */
 
   void CheckValid( Indi& indi );                               /* For debug */
-
-  int fNumOfGeneratedCh;
-  Evaluator* eval;			 
-  int fNumOfPop;
   
 private:
   int fFlagImp;         
   int fN;
-  Indi tBestTmp;
   int r,exam;
   int exam_flag;
   int **near_data;
@@ -43,8 +44,6 @@ private:
   int ch_dis;
   int **fABcycle;
   int *fPermu;
-  int fEvalType;
-  int fEsetType;
   int fNumOfABcycleInESet;
   int fNumOfABcycle;
   int fPosiCurr;
@@ -74,8 +73,8 @@ private:
   int fNumOfSegForCenter;   
   int *fSegForCenter;       
 
-  int *fGainAB;             
-  int fGainModi;            
+  EvalType *fGainAB;             
+  EvalType fGainModi;            
   int fNumOfModiEdge;				 
   int fNumOfBestModiEdge;				 
   int **fModiEdge;				 

@@ -37,7 +37,7 @@ public:
 
   int fStagBest;
   double fAverageValue;                  /* The average tour lengths of the population */
-  int fBestValue;                        /* The tour lenght of the best tour in the population */
+  EvalType fBestValue;                        /* The tour lenght of the best tour in the population */
   int fBestIndex;                        /* Index of the best population member */
   int* fIndexForMating;                  /* Mating list (r[] in the paper) */
 

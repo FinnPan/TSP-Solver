@@ -8,11 +8,16 @@ class Kopt {
 public:
   Kopt( int N );
   ~Kopt();
+  void DoIt(Indi& Indi);             /* Apply a local search with the 2-opt neighborhood */
+  void MakeRandSol(Indi& indi);      /* Set a random tour */
   void SetInvNearList();
+
+  const Evaluator* eval;
+
+private:
   void TransIndiToTree( Indi& indi );
   void TransTreeToIndi( Indi& indi );
 
-  void DoIt( Indi& Indi );             /* Apply a local search with the 2-opt neighborhood */
   void Sub();
   int GetNext( int t );
   int GetPrev( int t );
@@ -23,10 +28,6 @@ public:
   void CheckValid();
 
   int Turn( int &orient );
-
-  void MakeRandSol( Indi& indi );      /* Set a random tour */
-
-  Evaluator* eval;
 
 private:
   int fN;
@@ -45,7 +46,6 @@ private:
 
   int *fT;
   int fFlagRev;  
-  int fTourLength;
 
   int *fActiveV;
   int **fInvNearList; 

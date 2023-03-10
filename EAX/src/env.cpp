@@ -63,7 +63,7 @@ void Environment::DoIt()
   while( 1 )
   {
     this->SetAverageBest();
-    printf( "%d: %d %lf\n", fCurNumOfGen, fBestValue, fAverageValue );
+    printf( "%d: %lld %lf\n", fCurNumOfGen, fBestValue, fAverageValue );
 
     if( this->TerminationCondition() ) break;
 
@@ -103,7 +103,7 @@ bool Environment::TerminationCondition()
 
 void Environment::SetAverageBest() 
 {
-  int stockBest = tBest.fEvaluationValue;
+  EvalType stockBest = tBest.fEvaluationValue;
   
   fAverageValue = 0.0;
   fBestIndex = 0;

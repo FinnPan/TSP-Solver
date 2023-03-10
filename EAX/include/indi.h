@@ -1,6 +1,8 @@
 #ifndef __INDI__
 #define __INDI__
 
+using EvalType = long long;
+
 namespace Utils {
 	void Permutation (int* a, int n);
 };
@@ -15,7 +17,7 @@ public:
 
   int fN;                 /* Number of cities */
   int** fLink;            /* fLink[i][]: two vertices adjacent to i */
-  int fEvaluationValue;   /* Tour length of */
+  EvalType fEvaluationValue;   /* Tour length of */
 };
 
 #endif
