@@ -141,7 +141,7 @@ void Environment::InitPop()
 void Environment::SelectForMating()
 {
   /* fIndexForMating[] <-- a random permutation of 0, ..., fNumOfPop-1 */
-  Utils::Permutation( fIndexForMating, fNumOfPop, fNumOfPop ); 
+  Utils::Permutation( fIndexForMating, fNumOfPop ); 
   fIndexForMating[ fNumOfPop ] = fIndexForMating[ 0 ];
 }
 

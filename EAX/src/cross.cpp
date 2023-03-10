@@ -165,7 +165,7 @@ void Cross::DoIt( Indi& tKid, Indi& tPa2, int numOfKids, int flagP)
   else 
     Num = fNumOfABcycle;
 
-  Utils::Permutation( fPermu, fNumOfABcycle, fNumOfABcycle ); 
+  Utils::Permutation( fPermu, fNumOfABcycle ); 
 
 
   fNumOfGeneratedCh = 0;

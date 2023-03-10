@@ -309,14 +309,6 @@ int Kopt::GetPrev( int t )
   return t_p;
 }
 
-void Kopt::Swap(int &a,int &b)
-{
-  int s;
-  s=a;
-  a=b;
-  b=s;
-}
-
 int Kopt::Turn( int &orient )
 {
   assert( orient == 0 || orient == 1 );
@@ -379,14 +371,14 @@ void Kopt::IncrementImp( int flagRev )
 
     if( (fOrient[seg_t1_s] == 1 && (fOrdCity[ t1_s ] > fOrdCity[ t1_e ])) || 
         (fOrient[seg_t1_s] == 0 && (fOrdCity[ t1_s ] < fOrdCity[ t1_e ]))){
-      this->Swap( t1_s, t2_s );
-      this->Swap( t1_e, t2_e );
-      this->Swap( seg_t1_s, seg_t2_s );
-      this->Swap( seg_t1_e, seg_t2_e );
-      this->Swap( ordSeg_t1_s, ordSeg_t2_s );
-      this->Swap( ordSeg_t1_e, ordSeg_t2_e );
-      this->Swap( orient_t1_s, orient_t2_s );
-      this->Swap( orient_t1_e, orient_t2_e );
+     std::swap( t1_s, t2_s );
+     std::swap( t1_e, t2_e );
+     std::swap( seg_t1_s, seg_t2_s );
+     std::swap( seg_t1_e, seg_t2_e );
+     std::swap( ordSeg_t1_s, ordSeg_t2_s );
+     std::swap( ordSeg_t1_e, ordSeg_t2_e );
+     std::swap( orient_t1_s, orient_t2_s );
+     std::swap( orient_t1_e, orient_t2_e );
     }
 
     curr = t1_s;
@@ -394,7 +386,7 @@ void Kopt::IncrementImp( int flagRev )
 
     while(1)
     {
-      this->Swap( fLink[curr][0], fLink[curr][1] );
+     std::swap( fLink[curr][0], fLink[curr][1] );
       fOrdCity[ curr ] = ord;
       if( curr == t1_e )
 	break;
@@ -427,15 +419,15 @@ void Kopt::IncrementImp( int flagRev )
     numOfSeg2 = ordSeg_t2_e - ordSeg_t2_s + 1 + fNumOfSeg;
 
   if( numOfSeg1 > numOfSeg2 ){
-    this->Swap( numOfSeg1, numOfSeg2 );
-    this->Swap( t1_s, t2_s );
-    this->Swap( t1_e, t2_e );
-    this->Swap( seg_t1_s, seg_t2_s );
-    this->Swap( seg_t1_e, seg_t2_e );
-    this->Swap( ordSeg_t1_s, ordSeg_t2_s );
-    this->Swap( ordSeg_t1_e, ordSeg_t2_e );
-    this->Swap( orient_t1_s, orient_t2_s );
-    this->Swap( orient_t1_e, orient_t2_e );
+   std::swap( numOfSeg1, numOfSeg2 );
+   std::swap( t1_s, t2_s );
+   std::swap( t1_e, t2_e );
+   std::swap( seg_t1_s, seg_t2_s );
+   std::swap( seg_t1_e, seg_t2_e );
+   std::swap( ordSeg_t1_s, ordSeg_t2_s );
+   std::swap( ordSeg_t1_e, ordSeg_t2_e );
+   std::swap( orient_t1_s, orient_t2_s );
+   std::swap( orient_t1_e, orient_t2_e );
   }
 
   if( fLink[ t2_e ][ orient_t2_e ] == -1 ) flag_t2e_t1s = 1;
@@ -471,7 +463,7 @@ void Kopt::IncrementImp( int flagRev )
       ord = fOrdCity[ t1_s ];
       while(1)
       {
-	this->Swap( fLink[curr][0], fLink[curr][1] );
+	std::swap( fLink[curr][0], fLink[curr][1] );
 	fOrdCity[ curr ] = ord;
 	if( curr == t1_s )
 	  break;
@@ -499,7 +491,7 @@ void Kopt::IncrementImp( int flagRev )
       ord = fOrdCity[ t1_e ];
       while(1)
       {
-	this->Swap( fLink[curr][0], fLink[curr][1] );
+	std::swap( fLink[curr][0], fLink[curr][1] );
 	fOrdCity[ curr ] = ord;
 	if( curr == t1_e )  
 	  break;
@@ -593,13 +585,13 @@ void Kopt::IncrementImp( int flagRev )
     seg = fLinkSeg[seg_t1_s][fOrient[seg_t1_s]];
     fLinkSeg[seg][Turn(fOrient[seg])] = seg_t2_e;
     
-    this->Swap( fOrient[seg_t2_e], fOrient[seg_t1_s] );
-    this->Swap( fSizeSeg[seg_t2_e], fSizeSeg[seg_t1_s] );
-    this->Swap( fCitySeg[seg_t2_e][0], fCitySeg[seg_t1_s][0] );
-    this->Swap( fCitySeg[seg_t2_e][1], fCitySeg[seg_t1_s][1] );
-    this->Swap( fLinkSeg[seg_t2_e][0], fLinkSeg[seg_t1_s][0] );
-    this->Swap( fLinkSeg[seg_t2_e][1], fLinkSeg[seg_t1_s][1] );
-    this->Swap( seg_t2_e, seg_t1_s );
+   std::swap( fOrient[seg_t2_e], fOrient[seg_t1_s] );
+   std::swap( fSizeSeg[seg_t2_e], fSizeSeg[seg_t1_s] );
+   std::swap( fCitySeg[seg_t2_e][0], fCitySeg[seg_t1_s][0] );
+   std::swap( fCitySeg[seg_t2_e][1], fCitySeg[seg_t1_s][1] );
+   std::swap( fLinkSeg[seg_t2_e][0], fLinkSeg[seg_t1_s][0] );
+   std::swap( fLinkSeg[seg_t2_e][1], fLinkSeg[seg_t1_s][1] );
+   std::swap( seg_t2_e, seg_t1_s );
   }
 
   if( fSizeSeg[seg_t2_s] < length_t1e_seg )
@@ -613,13 +605,13 @@ void Kopt::IncrementImp( int flagRev )
     seg = fLinkSeg[seg_t1_e][fOrient[seg_t1_e]];
     fLinkSeg[seg][Turn(fOrient[seg])] = seg_t2_s;
 
-    this->Swap( fOrient[seg_t2_s], fOrient[seg_t1_e] );
-    this->Swap( fSizeSeg[seg_t2_s], fSizeSeg[seg_t1_e] );
-    this->Swap( fCitySeg[seg_t2_s][0], fCitySeg[seg_t1_e][0] );
-    this->Swap( fCitySeg[seg_t2_s][1], fCitySeg[seg_t1_e][1] );
-    this->Swap( fLinkSeg[seg_t2_s][0], fLinkSeg[seg_t1_e][0] );
-    this->Swap( fLinkSeg[seg_t2_s][1], fLinkSeg[seg_t1_e][1] );
-    this->Swap( seg_t2_s, seg_t1_e );
+   std::swap( fOrient[seg_t2_s], fOrient[seg_t1_e] );
+   std::swap( fSizeSeg[seg_t2_s], fSizeSeg[seg_t1_e] );
+   std::swap( fCitySeg[seg_t2_s][0], fCitySeg[seg_t1_e][0] );
+   std::swap( fCitySeg[seg_t2_s][1], fCitySeg[seg_t1_e][1] );
+   std::swap( fLinkSeg[seg_t2_s][0], fLinkSeg[seg_t1_e][0] );
+   std::swap( fLinkSeg[seg_t2_s][1], fLinkSeg[seg_t1_e][1] );
+   std::swap( seg_t2_s, seg_t1_e );
   }
 
 
@@ -713,7 +705,7 @@ void Kopt::CombineSeg( int segL, int segS )
 
     next = fLink[curr][direction];
     if( fOrient[segL] != fOrient[segS] )
-      this->Swap( fLink[curr][0], fLink[curr][1] ); 
+     std::swap( fLink[curr][0], fLink[curr][1] ); 
 
     if( curr == t_e )
       break;

@@ -3,67 +3,16 @@
 
 #include "indi.h"
 
-void Utils::Permutation(int* array, int numOfElement, int numOfSample)
+void Utils::Permutation(int* a, int n)
 {
-    int i, j, k, r;
-    int* b;
-
-    if (numOfElement <= 0)
-        return;
-
-    b = new int[numOfElement];
-
-    for (j = 0; j < numOfElement; j++) b[j] = 0;
-    for (i = 0; i < numOfSample; i++)
-    {
-        r = rand() % (numOfElement - i);
-        k = 0;
-        for (j = 0; j <= r; j++)
-        {
-            while (b[k] == 1)
-            {
-                k++;
-            }
-            k++;
-        }
-        array[i] = k - 1;
-        b[k - 1] = 1;
+    int r = 0;
+    for (int i = 0; i < n; ++i) {
+        a[i] = i;
     }
-    delete[] b;
-}
-
-int Utils::Integer(int minNumber, int maxNumber)
-{
-    return minNumber + (int)(rand() * (double)(maxNumber - minNumber + 1));
-}
-
-void Utils::Index_B(int* Arg, int numOfArg, int* indexOrderd, int numOfOrd)
-{
-    int indexBest = 0;
-    int valueBest;
-    int* checked;
-    checked = new int[numOfArg];
-
-    assert(Arg[0] > -999999999);
-
-    for (int i = 0; i < numOfArg; ++i)
-        checked[i] = 0;
-
-    for (int i = 0; i < numOfOrd; ++i)
-    {
-        valueBest = -999999999;
-        for (int j = 0; j < numOfArg; ++j)
-        {
-            if ((Arg[j] > valueBest) && checked[j] == 0) {
-                valueBest = Arg[j];
-                indexBest = j;
-            }
-        }
-        indexOrderd[i] = indexBest;
-        checked[indexBest] = 1;
+    for (int i = 0; i < n - 1; ++i) {
+        r = rand() % (n - (i + 1)) + i + 1;
+        std::swap(a[i], a[r]);
     }
-
-    delete[] checked;
 }
 
 Indi::Indi()

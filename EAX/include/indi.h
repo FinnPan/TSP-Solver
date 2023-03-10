@@ -1,11 +1,8 @@
 #ifndef __INDI__
 #define __INDI__
 
-class Utils {
-public:
-	static void Permutation(int* array, int numOfelement, int numOfSample);
-	static int Integer(int minNumber, int maxNumber);
-	static void Index_B(int* Arg, int numOfArg, int* indexOrderd, int numOfOrd);
+namespace Utils {
+	void Permutation (int* a, int n);
 };
 
 class Indi {

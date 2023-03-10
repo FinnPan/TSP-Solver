@@ -22,7 +22,6 @@ public:
   void CheckDetail();
   void CheckValid();
 
-  void Swap(int &a,int &b);
   int Turn( int &orient );
 
   void MakeRandSol( Indi& indi );      /* Set a random tour */
