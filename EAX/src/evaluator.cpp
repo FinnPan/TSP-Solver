@@ -30,7 +30,7 @@ Evaluator::~Evaluator()
   }
 }
 
-void Evaluator::SetInstance(const char filename[] )
+void Evaluator::SetInstance( const char filename[] )
 {
   FILE* fp;
   int n;

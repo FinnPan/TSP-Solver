@@ -7,22 +7,24 @@
 #include "Cross.h"
 #include "Kopt.h"
 #include "env.h"
-     
-void MakeRandSol( Evaluator* eval , Indi& indi );
-void Make2optSol( Evaluator* eval , Indi& indi );
 
 Environment::Environment()
 {
   fEvaluator = new Evaluator();
+  fIndexForMating = nullptr;
+  tCurPop = nullptr;
+  fCross = nullptr;
+  fKopt = nullptr;
 }
 
 
 Environment::~Environment()
 {
+  delete fEvaluator;
   delete [] fIndexForMating;
   delete [] tCurPop;
-  delete fEvaluator;
   delete fCross;
+  delete fKopt;
 }
 
 
